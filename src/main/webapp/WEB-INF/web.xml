@@ -12,7 +12,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>TestServlet</servlet-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/test</url-pattern>
   </servlet-mapping>
   
   <servlet>
@@ -25,8 +25,8 @@
   </servlet> 
   <servlet>
     <servlet-name>LoginPage</servlet-name>
-    <jsp-file>/login.jsp</jsp-file>
-  </servlet>  
+    <jsp-file>/login.html</jsp-file>
+  </servlet>
   <servlet>
     <servlet-name>Index</servlet-name>
     <jsp-file>/index.jsp</jsp-file>

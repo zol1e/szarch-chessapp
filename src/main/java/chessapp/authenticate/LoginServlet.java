@@ -40,7 +40,6 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, java.io.IOException {
 
 		try {
-
 			LoginBean user = new LoginBean();
 			user.setUserName(request.getParameter("uname"));
 			user.setPassword(request.getParameter("passw"));
@@ -56,11 +55,11 @@ public class LoginServlet extends HttpServlet {
 				//setting session to expiry in 30 mins
 				userName.setMaxAge(30*60);
 				response.addCookie(userName);
+				response.setStatus(200);
+				response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/game00/index")); // logged-in page
 				
-				response.sendRedirect("/game00/index"); // logged-in page
 			} else {
-				request.setAttribute("msg", "incorrect username or password");
-				request.getRequestDispatcher("/login").forward(request, response);
+				response.sendError(400);
 			}
 				//response.sendRedirect("login.jsp"); // error page
 		}
