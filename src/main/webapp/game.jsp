@@ -8,11 +8,8 @@
 
 	<h1>WebSocket test</h1>
 
-	<input onclick="send_message()" value="Send" type="button">
 	<input onclick="connect_websocket()" value="Connect with websocket"
 		type="button">
-	<input id="text" name="message" value="Message to websocket"
-		type="text">
 
 	<div id="content"></div>
 
@@ -31,8 +28,9 @@
 			document.getElementById("content").innerHTML = "Move happend";
 			if (websocket == null) {
 				document.getElementById("content").innerHTML = "Not connected, press connect button";
+				board1.position('start', true);
 			} else {
-				websocket.send(newPos);
+				websocket.send(board1.fen());
 			}
 		};
 		
@@ -47,10 +45,10 @@
 		function initWebSocket() {
 			websocket = new WebSocket("ws://localhost:8080/game/websocket");
 			websocket.onopen = function(evt) {
-				document.getElementById("content").innerHTML = evt.data;
+				document.getElementById("content").innerHTML = "Connected";
 			};
 			websocket.onmessage = function(evt) {
-				document.getElementById("content").innerHTML = evt.data;
+				board1.position(evt.data, true);
 			};
 			websocket.onerror = function(evt) {
 				websocket = null;

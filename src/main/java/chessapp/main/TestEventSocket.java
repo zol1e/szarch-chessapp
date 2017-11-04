@@ -5,19 +5,15 @@ import java.io.IOException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 
-public class TestEventSocket extends WebSocketAdapter {
+import chessapp.game.ChessjsUtility;
+import chessapp.game.ChesspressoUtility;
 
+public class TestEventSocket extends WebSocketAdapter {
+	
 	@Override
 	public void onWebSocketConnect(Session sess) {
 		super.onWebSocketConnect(sess);
 		System.out.println("Socket Connected: " + sess);
-		
-		try {
-			getRemote().sendString("Client connected");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -25,8 +21,13 @@ public class TestEventSocket extends WebSocketAdapter {
 		super.onWebSocketText(message);
 		System.out.println("Received TEXT message: " + message);
 		
+		ChesspressoUtility chessUtility = new ChesspressoUtility();
+		String serverMove = chessUtility.generateRandomMove(message);
+		
+		System.out.println(serverMove);
+		
 		try {
-			getRemote().sendString("Message received: " + message);
+			getRemote().sendString(serverMove);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
