@@ -6,7 +6,9 @@
 </div>
 
 <div id="content">
-	
+	<form action="/LogoutServlet" method="post">
+<input type="submit" value="Logout" >
+</form>
 </div>
 
 </body>

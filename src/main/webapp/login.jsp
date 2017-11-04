@@ -13,7 +13,10 @@
 	</head>
 
 	<body>
-		<form action="LoginServlet" id="loginform">
+	<c:if test="${null != msg}">
+   		<p>${msg}</p>
+	</c:if>
+		<form action="/LoginServlet" id="loginform" method="POST">
 			
 			Please enter your username 		
 			<input type="text" name="uname"/><br>		
