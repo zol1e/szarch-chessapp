@@ -28,6 +28,14 @@
     <jsp-file>/login.html</jsp-file>
   </servlet>
   <servlet>
+    <servlet-name>RegistrationPage</servlet-name>
+    <jsp-file>/register.html</jsp-file>
+  </servlet>
+  <servlet>
+    <servlet-name>RegisterServlet</servlet-name>
+    <servlet-class>chessapp.authenticate.RegisterServlet</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>Index</servlet-name>
     <jsp-file>/index.jsp</jsp-file>
   </servlet>
@@ -37,8 +45,16 @@
     <url-pattern>LoginServlet</url-pattern>   
   </servlet-mapping>
   <servlet-mapping>
+    <servlet-name>RegisterServlet</servlet-name>
+    <url-pattern>RegisterServlet</url-pattern>   
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>LogoutServlet</servlet-name>
     <url-pattern>LogoutServlet</url-pattern>   
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>RegistrationPage</servlet-name>
+    <url-pattern>/registration</url-pattern>   
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>LoginPage</servlet-name>

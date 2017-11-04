@@ -5,12 +5,6 @@
 			$('input[type="text"],input[type="password"]').css("border","2px solid red");
 			$('input[type="text"],input[type="password"]').css("box-shadow","0 0 3px red");
 		}else {
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					
-				}
-			}
 			var http = new XMLHttpRequest();
 			var url = "/LoginServlet";
 			var params = "uname=" + username + "&passw=" + password;

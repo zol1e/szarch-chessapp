@@ -15,6 +15,12 @@ public class UserDAO {
 		// TODO Auto-generated method stub
 		// remove sessionid n shit
 		
+	}	
+	
+	public static int register(LoginBean user) {
+		// TODO Auto-generated method stub
+		// return 0 if succesfully registered, else smthng else
+		return 0;
 	}
 
 }
