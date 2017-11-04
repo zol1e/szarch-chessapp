@@ -14,5 +14,28 @@
     <servlet-name>TestServlet</servlet-name>
     <url-pattern>/hello/*</url-pattern>
   </servlet-mapping>
-
+  <servlet>
+    <servlet-name>LoginServlet</servlet-name>
+    <servlet-class>chessapp.authenticate.LoginServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LoginServlet</servlet-name>
+    <url-pattern>/LoginServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>LoginPage</servlet-name>
+    <jsp-file>/login.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>LoginPage</servlet-name>
+    <url-pattern>/login</url-pattern>   
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Index</servlet-name>
+    <jsp-file>/index.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Index</servlet-name>
+    <url-pattern>/index</url-pattern>   
+  </servlet-mapping>
 </web-app>
