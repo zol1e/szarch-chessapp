@@ -34,6 +34,12 @@ public class TestEventSocket extends WebSocketAdapter {
 	}
 
 	@Override
+	public void onWebSocketBinary(byte[] payload, int offset, int len) {
+		super.onWebSocketBinary(payload, offset, len);
+		System.out.println("Received binary message");
+	}
+	
+	@Override
 	public void onWebSocketClose(int statusCode, String reason) {
 		super.onWebSocketClose(statusCode, reason);
 		System.out.println("Socket Closed: [" + statusCode + "] " + reason);
