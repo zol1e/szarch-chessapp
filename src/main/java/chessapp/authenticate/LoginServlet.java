@@ -44,9 +44,9 @@ public class LoginServlet extends HttpServlet {
 			user.setUserName(request.getParameter("uname"));
 			user.setPassword(request.getParameter("passw"));
 
-			user = UserDAO.login(user);
+			int result = UserDAO.login(user, request.getSession().getId());
 
-			if (user != null) {
+			if (result == 0) {
 
 				HttpSession session = request.getSession(true);
 				session.setAttribute("currentSessionUser", user.getUserName());

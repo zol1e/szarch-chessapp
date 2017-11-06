@@ -19,7 +19,7 @@ public class LogoutServlet extends HttpServlet {
     	if(cookies != null){
 	    	for(Cookie cookie : cookies){
 	    		if(cookie.getName().equals("user")){
-	    			UserDAO.logout(cookie.getValue());
+	    			UserDAO.logout(cookie.getValue(), request.getSession().getId());
 	    		}
 	    	}
     	}

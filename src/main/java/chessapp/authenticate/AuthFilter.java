@@ -9,9 +9,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import chessapp.model.UserDAO;
 
 public class AuthFilter implements Filter {
 
@@ -29,10 +32,19 @@ private ServletContext context;
 		
 		String uri = req.getRequestURI();
 		this.context.log("Requested Resource::"+uri);
-		
+    	
+		Cookie[] cookies = req.getCookies();
+    	Cookie user = null;
+    	if(cookies != null){
+	    	for(Cookie cookie : cookies){
+	    		if(cookie.getName().equals("user")){
+	    			user = cookie;
+	    		}
+	    	}
+    	}
 		HttpSession session = req.getSession(false);
 		
-		if(session == null || !filter(session.getId())){
+		if(session == null || user == null || !isValid(session.getId(), user.getValue())){
 			this.context.log("Unauthorized access request");
 			res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/login"));
 		}else{
@@ -44,10 +56,8 @@ private ServletContext context;
 	}
 
 	
-
-	private boolean filter(String id) {
-		// TODO Auto-generated method stub
-		return true;
+	private boolean isValid(String session, String userName) {
+		return 0 == UserDAO.isLoggedIn(userName, session);
 	}
 
 	public void destroy() {
