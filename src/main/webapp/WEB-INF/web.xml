@@ -6,6 +6,10 @@
    metadata-complete="false"
    version="3.1">
 
+  <listener>
+  	<listener-class>chessapp.server.ServerInitDestroyHandler</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>TestServlet</servlet-name>
     <servlet-class>chessapp.main.TestServlet</servlet-class>
