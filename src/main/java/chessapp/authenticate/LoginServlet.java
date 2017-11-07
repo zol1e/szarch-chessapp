@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import chessapp.beans.LoginBean;
 import chessapp.model.UserDAO;
 
 public class LoginServlet extends HttpServlet {
@@ -40,18 +39,15 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, java.io.IOException {
 
 		try {
-			LoginBean user = new LoginBean();
-			user.setUserName(request.getParameter("uname"));
-			user.setPassword(request.getParameter("passw"));
 
-			int result = UserDAO.login(user, request.getSession().getId());
+			int result = UserDAO.login(request.getParameter("uname"), request.getParameter("passw"), request.getSession().getId());
 
 			if (result == 0) {
 
 				HttpSession session = request.getSession(true);
-				session.setAttribute("currentSessionUser", user.getUserName());
+				session.setAttribute("currentSessionUser", request.getParameter("uname"));
 				session.setMaxInactiveInterval(30*60);
-				Cookie userName = new Cookie("user", user.getUserName());
+				Cookie userName = new Cookie("user", request.getParameter("uname"));
 				//setting session to expiry in 30 mins
 				userName.setMaxAge(30*60);
 				response.addCookie(userName);

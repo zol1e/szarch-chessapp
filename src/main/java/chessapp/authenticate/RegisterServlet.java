@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import chessapp.beans.LoginBean;
 import chessapp.model.UserDAO;
 
 public class RegisterServlet extends HttpServlet {
@@ -28,11 +27,8 @@ public class RegisterServlet extends HttpServlet {
 			throws ServletException, java.io.IOException {
 
 		try {
-			LoginBean user = new LoginBean();
-			user.setUserName(request.getParameter("uname"));
-			user.setPassword(request.getParameter("passw"));
 
-			int succes = UserDAO.register(user);
+			int succes = UserDAO.register(request.getParameter("uname"), request.getParameter("passw"));
 
 			if (succes == 0) {
 

@@ -1,14 +1,13 @@
 package chessapp.model;
 
-import chessapp.beans.LoginBean;
 
 public class UserDAO {
 
-	public static int login(LoginBean user, String sessionId) {
+	public static int login(String userName, String password, String sessionId) {
 		// TODO Auto-generated method stub
 		// put that mofo in the valid session table
-		return "Alexample".equals(user.getUserName()) &&
-				"123456".equals(user.getPassword()) ?
+		return "Alexample".equals(userName) &&
+				"123456".equals(password) ?
 						0 : -1;
 	}
 	
@@ -25,7 +24,7 @@ public class UserDAO {
 		return 0;
 	}
 	
-	public static int register(LoginBean user) {
+	public static int register(String userName, String password) {
 		// TODO Auto-generated method stub
 		// return 0 if succesfully registered, else smthng else
 		return 0;
