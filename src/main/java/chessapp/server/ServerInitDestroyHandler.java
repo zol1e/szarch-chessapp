@@ -9,7 +9,7 @@ import org.bson.Document;
 
 import com.mongodb.client.FindIterable;
 
-import database.MongoInstance;
+import chessapp.database.MongoInstance;
 
 public class ServerInitDestroyHandler implements ServletContextListener {
 
@@ -25,12 +25,12 @@ public class ServerInitDestroyHandler implements ServletContextListener {
 				.append("result", "1-0");
 		mongoInstance.insert("ChessGames", testDocument);
 		
-		sce.getServletContext().setAttribute("mongo", mongoInstance);
+		sce.getServletContext().setAttribute("db", mongoInstance);
 	}
 
 	public void contextDestroyed(ServletContextEvent sce) {
 		System.out.println("Server stoped - ServerInit contextDestroyed method called!");
-		MongoInstance mongoInstance = (MongoInstance) sce.getServletContext().getAttribute("mongo");
+		MongoInstance mongoInstance = (MongoInstance) sce.getServletContext().getAttribute("db");
 		
 		FindIterable<Document> documents = mongoInstance.findAll("ChessGames");
 		Iterator<Document> documentIterator = documents.iterator();
