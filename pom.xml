@@ -47,6 +47,7 @@
 			<artifactId>websocket-server</artifactId>
 			<version>${jettyVersion}</version>
 		</dependency>
+
 		<!-- To run websockets client -->
 		<dependency>
 			<groupId>org.eclipse.jetty.websocket</groupId>
@@ -60,6 +61,20 @@
 			<version>1.0.0</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/lib/Chesspresso-lib.jar</systemPath>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.eclipse.persistence/eclipselink -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.nosql -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>org.eclipse.persistence.nosql</artifactId>
+			<version>2.7.0</version>
 		</dependency>
 
 	</dependencies>

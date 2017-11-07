@@ -1,44 +1,53 @@
 package chessapp.shared.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 
-import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.codecs.pojo.annotations.BsonProperty;
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
 
-@BsonDiscriminator
-public final class User extends AbstractEntity {
+import org.eclipse.persistence.nosql.annotations.Field;
+import org.eclipse.persistence.nosql.annotations.NoSql;
+import org.eclipse.persistence.nosql.annotations.DataFormatType;
 
+@Entity
+@NoSql(dataFormat = DataFormatType.MAPPED)
+public class User implements Serializable {
+
+	@Id
+	@GeneratedValue
+	@Field(name = "_id")
 	private String userId;
 
+	@Basic
 	private String nickName;
-	
+
+	@Basic
 	private String password;
 
+	@Basic
 	private String firstName;
-	
+
+	@Basic
 	private String lastName;
-	
+
+	@Basic
+	@Temporal(javax.persistence.TemporalType.DATE)
 	private Date joinDate;
-	
-	@BsonCreator
-	public User(@BsonProperty("personId") String userId, 
-				@BsonProperty("nickName") String nickName,
-				@BsonProperty("firstName") String firstName,
-				@BsonProperty("lastName") String lastName,
-				@BsonProperty("joinDate") Date joinDate) {
+
+	public User() {
 		
-		super();
-		this.nickName = nickName;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.joinDate = joinDate;
 	}
-	
-	@BsonId
+
 	public String getUserId() {
 		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getNickName() {
@@ -47,6 +56,14 @@ public final class User extends AbstractEntity {
 
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getFirstName() {
@@ -72,13 +89,4 @@ public final class User extends AbstractEntity {
 	public void setJoinDate(Date joinDate) {
 		this.joinDate = joinDate;
 	}
-	
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	
 }

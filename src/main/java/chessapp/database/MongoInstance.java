@@ -2,23 +2,11 @@ package chessapp.database;
 
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.ClassModel;
-import org.bson.codecs.pojo.PojoCodecProvider;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-
-import chessapp.shared.entities.AbstractEntity;
-import chessapp.shared.entities.ChessGame;
-import chessapp.shared.entities.User;
-
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
-import java.util.Collection;
-
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 
 /**
  * Alkalmazás szintű adatbázis példány.
@@ -37,29 +25,7 @@ public class MongoInstance {
 	private CodecRegistry pojoCodecRegistry;
 
 	public MongoInstance(String address, int port, String databaseName) {
-
-		// ------------------------
-		/*
-		 * TODO: Lehet hogy így kell, próbálkozni kell.
-		 */
-		ClassModel<AbstractEntity> abstractEntityModel = ClassModel.builder(AbstractEntity.class)
-				.enableDiscriminator(true).build();
-		ClassModel<User> userModel = ClassModel.builder(User.class).enableDiscriminator(true).build();
-		ClassModel<ChessGame> chessGameModel = ClassModel.builder(ChessGame.class).enableDiscriminator(true).build();
-		PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder()
-				.register(abstractEntityModel, userModel, chessGameModel).build();
-		
-		/*
-		 * TODO: de lehet, hogy így:
-		 */
-		
-		//PojoCodecProvider pojoCodecProvider = PojoCodecProvider.builder().register("chessapp.shared.entities").build();
-
-		// -------------------------
-		
-		pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(), fromProviders(pojoCodecProvider));
 		mongoClient = new MongoClient(address, port);
-		database = mongoClient.getDatabase(databaseName);
 		database = database.withCodecRegistry(pojoCodecRegistry);
 
 		this.databaseName = databaseName;
@@ -121,14 +87,6 @@ public class MongoInstance {
 
 	public void setMongoClient(MongoClient mongoClient) {
 		this.mongoClient = mongoClient;
-	}
-
-	/**
-	 * Entitás létrehozásához.
-	 */
-	public void create(AbstractEntity entity) {
-		String collectionName = PojoCollectionNameMappings.getCollectionName(entity.getClass());
-		MongoCollection<Document> collection = getCollection(collectionName);
 	}
 
 }

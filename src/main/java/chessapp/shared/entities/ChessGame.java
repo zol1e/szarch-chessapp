@@ -1,52 +1,56 @@
 package chessapp.shared.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 
-import org.bson.codecs.pojo.annotations.BsonCreator;
-import org.bson.codecs.pojo.annotations.BsonDiscriminator;
-import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.codecs.pojo.annotations.BsonProperty;
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
 
-@BsonDiscriminator
-public class ChessGame extends AbstractEntity {
-	
-	public static enum GameResult {
-		WHITE_WON,
-		BLACK_WON,
-		DRAW
-	};
-	
+import org.eclipse.persistence.nosql.annotations.DataFormatType;
+import org.eclipse.persistence.nosql.annotations.Field;
+import org.eclipse.persistence.nosql.annotations.NoSql;
+
+@Entity
+@NoSql(dataFormat = DataFormatType.MAPPED)
+public class ChessGame implements Serializable {
+
+	/*
+	 * public static enum GameResult { WHITE_WON, BLACK_WON, DRAW };
+	 */
+
+	@Id
+	@GeneratedValue
+	@Field(name = "_id")
 	private String chessGameId;
 
+	/*@Basic
 	private User whitePlayer;
-	
-	private User blackPlayer;
-	
-	private Date date;
-	
-	private GameResult result;
-	
-	@BsonCreator
-	public ChessGame(@BsonProperty("chessGameId") String chessGameId,
-					 @BsonProperty("whitePlayer") User whitePlayer, 
-					 @BsonProperty("blackPlayer") User blackPlayer,
-					 @BsonProperty("date") Date date,
-					 @BsonProperty("result") GameResult result) {
+
+	@Basic
+	private User blackPlayer;*/
+
+	@Basic
+	@Temporal(javax.persistence.TemporalType.DATE)
+	private Date creationDate;
+
+	// private GameResult result;
+
+	public ChessGame() {
 		
-		super();
-		this.chessGameId = chessGameId;
-		this.whitePlayer = whitePlayer;
-		this.blackPlayer = blackPlayer;
-		this.date = date;
-		this.result = result;
 	}
-	
-	@BsonId
+
 	public String getChessGameId() {
 		return chessGameId;
 	}
-	
-	public User getWhitePlayer() {
+
+	public void setChessGameId(String chessGameId) {
+		this.chessGameId = chessGameId;
+	}
+
+	/*public User getWhitePlayer() {
 		return whitePlayer;
 	}
 
@@ -60,22 +64,13 @@ public class ChessGame extends AbstractEntity {
 
 	public void setBlackPlayer(User blackPlayer) {
 		this.blackPlayer = blackPlayer;
-	}
+	}*/
 
 	public Date getDate() {
-		return date;
+		return creationDate;
 	}
 
 	public void setDate(Date date) {
-		this.date = date;
+		this.creationDate = date;
 	}
-
-	public GameResult getResult() {
-		return result;
-	}
-
-	public void setResult(GameResult result) {
-		this.result = result;
-	}
-	
 }
