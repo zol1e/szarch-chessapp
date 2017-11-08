@@ -1,14 +1,7 @@
 package chessapp.server;
 
-import java.util.Date;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
-import chessapp.shared.entities.User;
 
 public class ServerInitDestroyHandler implements ServletContextListener {
 
@@ -16,7 +9,7 @@ public class ServerInitDestroyHandler implements ServletContextListener {
 		System.out.println("Server has been started - ServerInit contextInitialized method called!");
 		
 		// persistence.xml-ben megadott unit-name kell a paraméterbe
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("chessapp");
+		/*EntityManagerFactory factory = Persistence.createEntityManagerFactory("chessapp");
 		EntityManager entityManager = factory.createEntityManager();
 		
 		User user = new User();
@@ -27,7 +20,7 @@ public class ServerInitDestroyHandler implements ServletContextListener {
 		
 		entityManager.getTransaction().begin();
 		entityManager.merge(user);
-		entityManager.getTransaction().commit();
+		entityManager.getTransaction().commit();*/
 	}
 
 	public void contextDestroyed(ServletContextEvent sce) {

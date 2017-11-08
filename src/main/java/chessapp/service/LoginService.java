@@ -1,9 +1,17 @@
-package chessapp.model;
+package chessapp.service;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
-public class UserDAO {
+import chessapp.model.UserBean;
 
-	public static int login(String userName, String password, String sessionId) {
+@Stateless
+public class LoginService {
+
+	@EJB
+	private UserBean userBean;
+	
+	public int login(String userName, String password, String sessionId) {
 		// TODO Auto-generated method stub
 		// put that mofo in the valid session table
 		return "Alexample".equals(userName) &&
@@ -11,23 +19,23 @@ public class UserDAO {
 						0 : -1;
 	}
 	
-	public static void logout(String userName, String sessionId) {
+	public void logout(String userName, String sessionId) {
 		// TODO Auto-generated method stub
 		// remove that mofo from the valid sessions table
 		
 	}	
 	
-	public static int isLoggedIn(String userName, String sessionId) {
+	public int isLoggedIn(String userName, String sessionId) {
 		// return 0 if that userNAme and sessionid is in there
 		// return not0 if no record of userName&session in valid session table
 		
 		return 0;
 	}
 	
-	public static int register(String userName, String password) {
+	public int register(String userName, String password) {
 		// TODO Auto-generated method stub
 		// return 0 if succesfully registered, else smthng else
 		return 0;
 	}
-
+	
 }

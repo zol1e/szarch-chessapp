@@ -17,6 +17,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-core</artifactId>
+			<version>4.7.4</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver</artifactId>
 			<version>3.5.0</version>

@@ -17,13 +17,15 @@ import org.eclipse.persistence.nosql.annotations.DataFormatType;
 @NoSql(dataFormat = DataFormatType.MAPPED)
 public class User implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue
 	@Field(name = "_id")
 	private String userId;
 
 	@Basic
-	private String nickName;
+	private String userName;
 
 	@Basic
 	private String password;
@@ -51,11 +53,11 @@ public class User implements Serializable {
 	}
 
 	public String getNickName() {
-		return nickName;
+		return userName;
 	}
 
 	public void setNickName(String nickName) {
-		this.nickName = nickName;
+		this.userName = nickName;
 	}
 
 	public String getPassword() {

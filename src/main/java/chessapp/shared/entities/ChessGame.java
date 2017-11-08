@@ -21,6 +21,8 @@ public class ChessGame implements Serializable {
 	 * public static enum GameResult { WHITE_WON, BLACK_WON, DRAW };
 	 */
 
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue
 	@Field(name = "_id")

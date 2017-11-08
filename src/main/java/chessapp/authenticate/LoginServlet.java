@@ -2,6 +2,7 @@ package chessapp.authenticate;
 
 import java.io.IOException;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -9,9 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import chessapp.model.UserDAO;
+import chessapp.service.LoginService;
 
 public class LoginServlet extends HttpServlet {
+	
+	@EJB
+	public LoginService loginService;
+	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			handleRequest(request, response);
@@ -40,7 +45,7 @@ public class LoginServlet extends HttpServlet {
 
 		try {
 
-			int result = UserDAO.login(request.getParameter("uname"), request.getParameter("passw"), request.getSession().getId());
+			int result = loginService.login(request.getParameter("uname"), request.getParameter("passw"), request.getSession().getId());
 
 			if (result == 0) {
 

@@ -11,6 +11,24 @@
   </listener>
 
   <servlet>
+    <servlet-name>UserServlet</servlet-name>
+    <servlet-class>chessapp.main.UserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserServlet</servlet-name>
+    <url-pattern>/users</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>GameServlet</servlet-name>
+    <servlet-class>chessapp.main.GameServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GameServlet</servlet-name>
+    <url-pattern>/game</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>TestServlet</servlet-name>
     <servlet-class>chessapp.main.TestServlet</servlet-class>
   </servlet>
@@ -77,11 +95,7 @@
     <filter-name>Authfilter</filter-name>
     <url-pattern>/game00/*</url-pattern>
   </filter-mapping>
-  
 
-     
-     
-     
   <servlet>
     <servlet-name>TestWebSocketServlet</servlet-name>
     <servlet-class>chessapp.main.TestWebSocketServlet</servlet-class>
@@ -92,7 +106,7 @@
   </servlet-mapping>
   
   <welcome-file-list>
-    <welcome-file>game.jsp</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
   
 </web-app>
