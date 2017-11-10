@@ -1,7 +1,6 @@
 package chessapp.main;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,13 +13,21 @@ import chessapp.shared.entities.User;
 @SuppressWarnings("serial")
 public class UserServlet extends HttpServlet {
 
-	private UserBean userBean;
+	private UserBean userBean = new UserBean();
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		List<User> users = userBean.findAll();
-		request.setAttribute("users", users);
+		User user = new User();
+		user.setFirstName("asdsas");
+		user.setLastName("sfef");
+		user.setNickName("fesfs");
+		user.setPassword("sssvv");
+		
+		userBean.create(user);
+		
+		//List<User> users = userBean.findAll();
+		//request.setAttribute("users", users);
 		request.getRequestDispatcher("/usersTable.jsp").forward(request, response);
 	}
 

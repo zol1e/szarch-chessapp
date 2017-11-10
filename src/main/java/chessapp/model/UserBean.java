@@ -3,15 +3,14 @@ package chessapp.model;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import chessapp.shared.entities.User;
 
 public class UserBean {
 
-	@PersistenceContext(unitName="chessapp")
-	private EntityManager em;
+	private EntityManager em = Persistence.createEntityManagerFactory("chessapp").createEntityManager();
 	
 	public void create(User user) {
 		em.getTransaction().begin();
