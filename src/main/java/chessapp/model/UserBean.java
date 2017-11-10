@@ -2,14 +2,12 @@ package chessapp.model;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import chessapp.shared.entities.User;
 
-@Stateless
 public class UserBean {
 
 	@PersistenceContext(unitName="chessapp")

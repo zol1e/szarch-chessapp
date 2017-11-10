@@ -2,7 +2,6 @@ package chessapp.authenticate;
 
 import java.io.IOException;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +13,6 @@ import chessapp.service.LoginService;
 
 public class LoginServlet extends HttpServlet {
 	
-	@EJB
 	public LoginService loginService;
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {

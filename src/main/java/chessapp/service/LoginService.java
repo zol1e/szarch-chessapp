@@ -1,14 +1,9 @@
 package chessapp.service;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-
 import chessapp.model.UserBean;
 
-@Stateless
 public class LoginService {
 
-	@EJB
 	private UserBean userBean;
 	
 	public int login(String userName, String password, String sessionId) {

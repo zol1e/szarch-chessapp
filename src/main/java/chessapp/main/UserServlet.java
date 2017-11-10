@@ -3,7 +3,6 @@ package chessapp.main;
 import java.io.IOException;
 import java.util.List;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import chessapp.shared.entities.User;
 @SuppressWarnings("serial")
 public class UserServlet extends HttpServlet {
 
-	@EJB
 	private UserBean userBean;
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
