@@ -26,6 +26,7 @@ public class ServerInitDestroyHandler implements ServletContextListener {
 	}
 
 	public void contextDestroyed(ServletContextEvent sce) {
+		EntityManagerFactorySingleton.closeConnection();
 		System.out.println("Server stoped - ServerInit contextDestroyed method called!");
 	}
 

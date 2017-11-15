@@ -15,6 +15,12 @@ public class EntityManagerFactorySingleton {
         }
     }
     
+    public static void closeConnection() {
+    	if (instance != null && instance.isOpen()) {
+            instance.close();
+        }
+    }
+    
     public static EntityManager getEntityManager() {
         if (instance == null) {
             instance = Persistence.createEntityManagerFactory("chessapp");

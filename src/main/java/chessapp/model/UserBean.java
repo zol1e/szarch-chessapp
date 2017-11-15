@@ -1,16 +1,19 @@
 package chessapp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
+import chessapp.main.EntityManagerFactorySingleton;
 import chessapp.shared.entities.User;
 
 public class UserBean {
 
-	private EntityManager em = Persistence.createEntityManagerFactory("chessapp").createEntityManager();
+	private EntityManager em = EntityManagerFactorySingleton.getEntityManager();
 	
 	public void create(User user) {
 		em.getTransaction().begin();
@@ -34,8 +37,12 @@ public class UserBean {
 	
 	@SuppressWarnings("unchecked")
 	public List<User> findAll() {
-		Query query = em.createNativeQuery("db.find()", User.class);
-		List<User> users = query.getResultList();
+		//em.getTransaction().begin();
+		//'User' in query must match the class' name. https://stackoverflow.com/questions/20193581/error-on-compiling-query-the-abstract-schema-type-entity-is-unknown  
+		TypedQuery<User> lQuery = em.createQuery("select u from User u", User.class);
+		List<User> users = lQuery.getResultList();
+		//em.getTransaction().commit();
+		//em.close();
 		return users;
 	}
 }

@@ -3,17 +3,17 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <table>
 	<tr>
-		<th>User name</th>
 		<th>First name</th>
 		<th>Last name</th>
+    <th>User name</th>
 		<th>Join date</th>
 	</tr>
-	<c:forEach items="${users}" var="users">
+	<c:forEach items="${users}" var="user">
 		<tr>
-			<td>${users.userName}</td>
-			<td>${users.firstName}</td>
-			<td>${users.lastName}</td>
-			<td>${users.joinDate}</td>
+			<td>${user.getFirstName()}</td>
+			<td>${user.getLastName()}</td>
+			<td>${user.getNickName()}</td>
+			<td>${user.getJoinDate()}</td>
 		</tr>
 	</c:forEach>
 </table>

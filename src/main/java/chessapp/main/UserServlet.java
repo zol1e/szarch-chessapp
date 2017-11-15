@@ -1,6 +1,7 @@
 package chessapp.main;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +26,8 @@ public class UserServlet extends HttpServlet {
 		user.setPassword("sssvv");
 		
 		userBean.create(user);
+		List<User> users = userBean.findAll();
+		request.setAttribute("users", users);
 		
 		//List<User> users = userBean.findAll();
 		//request.setAttribute("users", users);
