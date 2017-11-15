@@ -47,7 +47,7 @@
   </servlet> 
   <servlet>
     <servlet-name>LoginPage</servlet-name>
-    <jsp-file>/login.html</jsp-file>
+    <jsp-file>/loginView.jsp</jsp-file>
   </servlet>
   <servlet>
     <servlet-name>RegistrationPage</servlet-name>
@@ -64,7 +64,7 @@
   
   <servlet-mapping>
     <servlet-name>LoginServlet</servlet-name>
-    <url-pattern>LoginServlet</url-pattern>   
+    <url-pattern>LoginServlet</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>RegisterServlet</servlet-name>

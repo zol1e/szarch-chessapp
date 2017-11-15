@@ -3,11 +3,13 @@ package chessapp.server;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import chessapp.main.EntityManagerFactorySingleton;
+
 public class ServerInitDestroyHandler implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent sce) {
 		System.out.println("Server has been started - ServerInit contextInitialized method called!");
-		
+		EntityManagerFactorySingleton.initConnection();
 		// persistence.xml-ben megadott unit-name kell a paraméterbe
 		/*EntityManagerFactory factory = Persistence.createEntityManagerFactory("chessapp");
 		EntityManager entityManager = factory.createEntityManager();
