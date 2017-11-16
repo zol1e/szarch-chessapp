@@ -11,7 +11,7 @@ import chessapp.service.LoginService;
 
 public class RegisterServlet extends HttpServlet {
 	
-	LoginService loginService;
+	LoginService loginService = new LoginService();
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -24,6 +24,7 @@ public class RegisterServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
+	
 	private void handleRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, java.io.IOException {
 

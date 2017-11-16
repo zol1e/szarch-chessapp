@@ -8,8 +8,6 @@
 		var cpassword = $("#cpassword").val();
 		if (username == '' || password == '' || cpassword == '') {
 			;
-		} else if ((password.length) < 8) {
-			;
 		} else if (!(password).match(cpassword)) {
 			;
 		} else {

@@ -7,18 +7,12 @@
 
 <body>
 
-
-
 	<form id="loginform">
 
 		Please enter your username <input type="text" id="uname" /><br>
 
 		Please enter your password <input type="password" id="passw" /> <input
 			type="button" id="blogin" value="Login">
-		<div class="popup">
-			<span class="popuptext" id="myPopup">Incorrect
-				password/username!</span>
-		</div>
 	</form>
 	<script
 		src="${pageContext.request.contextPath}/util_js/jquery-3.2.1.min.js"></script>

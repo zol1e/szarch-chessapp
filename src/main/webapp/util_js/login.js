@@ -14,35 +14,15 @@
 			    if(http.readyState == 4 && http.status == 200) {
 			    	window.location.replace(http.responseURL);
 			    } else if (http.readyState == 4 && http.status == 400) {
-			    	$("form")[0].reset();	
-					showMsg();
+			    	$("form")[0].reset();
 			    }
 			    
 			    
 			}
-			http.send(params);
-			/*$.ajax({
-				  type: "POST",
-				  dataType: 'json',
-				  url: "/LoginServlet",
-				  data: "uname=" + username + "&passw=" + password,
-				  success: function(data){
-					  alert("succes");
-					  window.location.replace(data.redirect);
-				  },
-				  failure : function(){
-					  alert("fail");
-				  }
-				});*/
-			
+			http.send(params);			
 		}
 	};
 
-	
-	function showMsg() {
-	    var popup = document.getElementById("myPopup");
-	    popup.classList.toggle("show", true);
-	}
 	
 	$(document).ready(function(){
 		blogin.onclick = login;

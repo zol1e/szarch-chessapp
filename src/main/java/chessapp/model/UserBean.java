@@ -36,24 +36,28 @@ public class UserBean {
 		return em.find(User.class, id);
 	}
 	public User findByName(String name) {
-		return em.createQuery("select u from User u where u.userName = :uname", User.class)
-				.setParameter("uname", name)
-				.getSingleResult();
+		TypedQuery<User> query = em.createQuery("select u from User u where u.userName = :uname", User.class)
+				.setParameter("uname", name);
+		List<User> users = query.getResultList();
+		if (users.isEmpty())
+			return null;
+		return users.get(0);
 	}
+	
 	public User findByNameNPassword(String name, String password) {
-		return em.createQuery("select u from User u where u.userName = :uname and u.password = :passw", User.class)
+		TypedQuery<User> query = em.createQuery("select u from User u where u.userName = :uname and u.password = :passw", User.class)
 				.setParameter("uname", name)
-				.setParameter("passw", password)
-				.getSingleResult();
+				.setParameter("passw", password);
+		List<User> users = query.getResultList();
+		if (users.isEmpty())
+			return null;
+		return users.get(0);
 	}
+	
 	@SuppressWarnings("unchecked")
 	public List<User> findAll() {
-		//em.getTransaction().begin();
-		//'User' in query must match the class' name. https://stackoverflow.com/questions/20193581/error-on-compiling-query-the-abstract-schema-type-entity-is-unknown  
 		TypedQuery<User> lQuery = em.createQuery("select u from User u", User.class);
 		List<User> users = lQuery.getResultList();
-		//em.getTransaction().commit();
-		//em.close();
 		return users;
 	}
 }

@@ -47,13 +47,13 @@ public class LoginServlet extends HttpServlet {
 
 			if (result == 0) {
 
-				HttpSession session = request.getSession(true);
+				HttpSession session = request.getSession();
 				session.setAttribute("currentSessionUser", request.getParameter("uname"));
 				session.setMaxInactiveInterval(30*60);
-				Cookie userName = new Cookie("user", request.getParameter("uname"));
+				//Cookie userName = new Cookie("user", request.getParameter("uname"));
 				//setting session to expiry in 30 mins
-				userName.setMaxAge(30*60);
-				response.addCookie(userName);
+				//userName.setMaxAge(30*60);
+				//response.addCookie(userName);
 				response.setStatus(200);
 				response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/game00/index")); // logged-in page
 				
