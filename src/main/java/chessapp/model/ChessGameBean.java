@@ -3,12 +3,12 @@ package chessapp.model;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import chessapp.main.EntityManagerFactorySingleton;
 import chessapp.shared.entities.User;
 
 public class ChessGameBean {
 
-	@PersistenceContext(unitName="chessapp")
-	private EntityManager entityManager;
+	private EntityManager em = EntityManagerFactorySingleton.getEntityManager();
 	
 	private UserBean userBean;
 	

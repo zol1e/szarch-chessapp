@@ -45,6 +45,12 @@ public class LoginBean {
 				.getSingleResult();
 	}
 	
+	public UserLogin findBySessionId(String sessionId) {
+		return em.createQuery("select u from UserLogin u where u.sessionId = :sessionid", UserLogin.class)
+				.setParameter("sessonid", sessionId)
+				.getSingleResult();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<UserLogin> findAll() {
 		TypedQuery<UserLogin> lQuery = em.createQuery("select u from UserLogin u", UserLogin.class);
