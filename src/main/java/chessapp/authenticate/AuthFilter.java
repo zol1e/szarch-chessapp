@@ -58,6 +58,8 @@ public class AuthFilter implements Filter {
 	}
 
 	private boolean isValid(String session, String userName) {
+
+		System.out.println("is valid " + userName + " with sessionId: " + session);
 		return 0 == loginService.isLoggedIn(userName, session);
 	}
 
