@@ -40,6 +40,33 @@
     </Arg>
   </Call>
 
+  <!-- ============================================================= -->
+  <!-- Create a TLS (SSL) Context Factory  for later reuse           -->
+  <!-- ============================================================= -->
+  <New id="sslContextFactory" class="org.eclipse.jetty.util.ssl.SslContextFactory">
+    <Set name="KeyStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.keystore" default="src/main/webapp/WEB-INF/etc/keystore"/></Set>
+    <Set name="KeyStorePassword"><Property name="jetty.keystore.password" default="OBF:1sot1v961sar1w971ym71w8j1saj1v9g1sox"/></Set>
+    <Set name="KeyManagerPassword"><Property name="jetty.keymanager.password" default="OBF:1sot1v961sar1w971ym71w8j1saj1v9g1sox"/></Set>
+    <Set name="TrustStorePath"><Property name="jetty.base" default="." />/<Property name="jetty.truststore" default="src/main/webapp/WEB-INF/etc/keystore"/></Set>
+    <Set name="TrustStorePassword"><Property name="jetty.truststore.password" default="OBF:1sot1v961sar1w971ym71w8j1saj1v9g1sox"/></Set>
+    <Set name="EndpointIdentificationAlgorithm"></Set>
+    <Set name="NeedClientAuth"><Property name="jetty.ssl.needClientAuth" default="false"/></Set>
+    <Set name="WantClientAuth"><Property name="jetty.ssl.wantClientAuth" default="false"/></Set>
+    <Set name="ExcludeCipherSuites">
+     <Array type="String">
+      <Item>SSL_RSA_WITH_DES_CBC_SHA</Item>
+      <Item>SSL_DHE_RSA_WITH_DES_CBC_SHA</Item>
+      <Item>SSL_DHE_DSS_WITH_DES_CBC_SHA</Item>
+      <Item>SSL_RSA_EXPORT_WITH_RC4_40_MD5</Item>
+      <Item>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
+      <Item>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</Item>
+      <Item>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</Item>
+     </Array>
+    </Set>
+  </New>
+  
+  
+  
   <!-- =========================================================== -->
   <!-- Create a TLS specific HttpConfiguration based on the        -->
   <!-- common HttpConfiguration defined in jetty.xml               -->

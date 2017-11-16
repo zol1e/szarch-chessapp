@@ -107,7 +107,7 @@
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>${jettyVersion}</version>
 				<configuration>
-				  <jettyXml>src/main/webapp/WEB-INF/jetty.xml,jetty-ssl.xml,jetty-https.xml</jettyXml>
+				  <jettyXml>src/main/webapp/WEB-INF/jetty.xml,src/main/webapp/WEB-INF/jetty-ssl.xml,src/main/webapp/WEB-INF/jetty-https.xml,src/main/webapp/WEB-INF/jetty-ssl-context.xml</jettyXml>
 				</configuration>
 			</plugin>
 			<plugin>
