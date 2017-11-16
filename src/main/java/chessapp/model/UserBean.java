@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 
 import chessapp.main.EntityManagerFactorySingleton;
 import chessapp.shared.entities.User;
+import chessapp.shared.entities.UserLogin;
 
 public class UserBean {
 
@@ -31,10 +32,20 @@ public class UserBean {
 		
 	}
 	
-	public User findUser(int id) {
+	public User findUser(String id) {
 		return em.find(User.class, id);
 	}
-	
+	public User findByName(String name) {
+		return em.createQuery("select u from User u where u.userName = :uname", User.class)
+				.setParameter("uname", name)
+				.getSingleResult();
+	}
+	public User findByNameNPassword(String name, String password) {
+		return em.createQuery("select u from User u where u.userName = :uname and u.password = :passw", User.class)
+				.setParameter("uname", name)
+				.setParameter("passw", password)
+				.getSingleResult();
+	}
 	@SuppressWarnings("unchecked")
 	public List<User> findAll() {
 		//em.getTransaction().begin();

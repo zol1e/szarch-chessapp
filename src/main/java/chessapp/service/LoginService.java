@@ -1,35 +1,58 @@
 package chessapp.service;
 
+import chessapp.model.LoginBean;
 import chessapp.model.UserBean;
+import chessapp.shared.entities.User;
+import chessapp.shared.entities.UserLogin;
 
 public class LoginService {
 
-	private UserBean userBean;
+	private LoginBean loginBean = new LoginBean();
+	private UserBean userBean = new UserBean();
 	
 	public int login(String userName, String password, String sessionId) {
-		// TODO Auto-generated method stub
-		// put that mofo in the valid session table
-		return "Alexample".equals(userName) &&
-				"123456".equals(password) ?
-						0 : -1;
+		if (userName == null || password == null || sessionId == null)
+			return -1;
+		
+		UserLogin newer = new UserLogin(userName, sessionId, null);
+		
+		UserLogin old = loginBean.findByName(userName);		
+		if (old != null) {
+			loginBean.modify(newer);
+			return 0;
+		}
+		
+		User usr = userBean.findByNameNPassword(userName, password);
+		if (usr != null){
+			loginBean.create(newer);
+			return 0;
+		}
+		return -1;
 	}
 	
 	public void logout(String userName, String sessionId) {
-		// TODO Auto-generated method stub
-		// remove that mofo from the valid sessions table
-		
+		loginBean.delete(loginBean.findByName(userName));
 	}	
 	
 	public int isLoggedIn(String userName, String sessionId) {
-		// return 0 if that userNAme and sessionid is in there
-		// return not0 if no record of userName&session in valid session table
+		UserLogin old = loginBean.findByName(userName);
 		
+		if (old == null || !old.getSessionId().equals(sessionId))
+				return -1;
+						
 		return 0;
 	}
 	
 	public int register(String userName, String password) {
-		// TODO Auto-generated method stub
-		// return 0 if succesfully registered, else smthng else
+		if (null != userBean.findByName(userName))
+			return -1;
+		User user = new User();
+		user.setFirstName("");
+		user.setLastName("");
+		user.setNickName(userName);
+		user.setPassword(password);
+		
+		userBean.create(user);
 		return 0;
 	}
 	
