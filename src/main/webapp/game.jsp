@@ -43,7 +43,7 @@
 		var board1 = ChessBoard('board1', cfg);
 		
 		function initWebSocket() {
-			websocket = new WebSocket("ws://localhost:8080/game/websocket");
+			websocket = new WebSocket("wss://localhost:8443/game/websocket");
 			websocket.onopen = function(evt) {
 				document.getElementById("content").innerHTML = "Connected";
 			};
