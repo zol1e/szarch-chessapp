@@ -4,6 +4,7 @@
         version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="chessapp" transaction-type="RESOURCE_LOCAL">
         <class>chessapp.shared.entities.User</class>
+        <class>chessapp.shared.entities.UserLogin</class>
         <class>chessapp.shared.entities.ChessGame</class>
         <properties>
             <property name="eclipselink.target-database" 

@@ -40,15 +40,21 @@ public class LoginBean {
 	}
 	
 	public UserLogin findByName(String name) {
-		return em.createQuery("select u from UserLogin u where u.userName = :uname", UserLogin.class)
-				.setParameter("uname", name)
-				.getSingleResult();
+		TypedQuery<UserLogin> query = em.createQuery("select u from UserLogin u where u.userName = :uname", UserLogin.class)
+				.setParameter("uname", name);
+		List<UserLogin> users = query.getResultList();
+		if (users.isEmpty())
+			return null;
+		return users.get(0);
 	}
 	
 	public UserLogin findBySessionId(String sessionId) {
-		return em.createQuery("select u from UserLogin u where u.sessionId = :sessionid", UserLogin.class)
-				.setParameter("sessonid", sessionId)
-				.getSingleResult();
+		TypedQuery<UserLogin> query = em.createQuery("select u from UserLogin u where u.sessionId = :sessionid", UserLogin.class)
+				.setParameter("sessonid", sessionId);
+		List<UserLogin> users = query.getResultList();
+		if (users.isEmpty())
+			return null;
+		return users.get(0);
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -18,7 +18,7 @@ import chessapp.service.LoginService;
 
 public class AuthFilter implements Filter {
 
-	LoginService loginService;
+	LoginService loginService = new LoginService();
 	
 	private ServletContext context;
 
@@ -36,7 +36,7 @@ public class AuthFilter implements Filter {
 		String uri = req.getRequestURI();
 		this.context.log("Requested Resource::" + uri);
 
-		Cookie[] cookies = req.getCookies();
+		/*Cookie[] cookies = req.getCookies();
 		Cookie user = null;
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
@@ -44,10 +44,10 @@ public class AuthFilter implements Filter {
 					user = cookie;
 				}
 			}
-		}
+		}*/
 		HttpSession session = req.getSession(false);
 
-		if (session == null || user == null || !isValid(session.getId(), user.getValue())) {
+		if (session == null || !isValid(session.getId(), (String)session.getAttribute("currentSessionUser"))) {
 			this.context.log("Unauthorized access request");
 			res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/login"));
 		} else {

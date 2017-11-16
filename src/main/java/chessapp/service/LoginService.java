@@ -13,6 +13,7 @@ public class LoginService {
 	public int login(String userName, String password, String sessionId) {
 		if (userName == null || password == null || sessionId == null)
 			return -1;
+		System.out.println("loggin in as " + userName + " with sessionId: " + sessionId);
 		
 		UserLogin newer = new UserLogin(userName, sessionId, null);
 		
@@ -31,10 +32,12 @@ public class LoginService {
 	}
 	
 	public void logout(String userName, String sessionId) {
+		System.out.println("loggin out as " + userName + " with sessionId: " + sessionId);
 		loginBean.delete(loginBean.findByName(userName));
 	}	
 	
 	public int isLoggedIn(String userName, String sessionId) {
+		System.out.println("is logged in as " + userName + " with sessionId: " + sessionId);
 		UserLogin old = loginBean.findByName(userName);
 		
 		if (old == null || !old.getSessionId().equals(sessionId))
@@ -44,6 +47,7 @@ public class LoginService {
 	}
 	
 	public int register(String userName, String password) {
+		System.out.println("try to register as " + userName);
 		if (null != userBean.findByName(userName))
 			return -1;
 		User user = new User();

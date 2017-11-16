@@ -12,11 +12,11 @@ import org.eclipse.persistence.nosql.annotations.NoSql;
 @Entity
 @NoSql(dataFormat = DataFormatType.MAPPED)
 public class UserLogin {
+
+	@Id
 	@Basic
 	private String sessionId;
 	
-
-	@Id
 	@Basic
 	private String userId;
 

@@ -13,7 +13,7 @@ import chessapp.service.LoginService;
 
 public class LoginServlet extends HttpServlet {
 	
-	public LoginService loginService;
+	public LoginService loginService = new LoginService();
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) {
 		try {
