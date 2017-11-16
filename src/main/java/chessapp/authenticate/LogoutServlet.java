@@ -13,11 +13,11 @@ import chessapp.service.LoginService;
 
 public class LogoutServlet extends HttpServlet {
 	
-	public LoginService loginService;
+	public LoginService loginService = new LoginService();
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	
-    	Cookie[] cookies = request.getCookies();
+    	/*Cookie[] cookies = request.getCookies();
     	
     	if(cookies != null){
 	    	for(Cookie cookie : cookies){
@@ -25,9 +25,12 @@ public class LogoutServlet extends HttpServlet {
 	    			loginService.logout(cookie.getValue(), request.getSession().getId());
 	    		}
 	    	}
-    	}
+    	}*/
+		
     	//invalidate the session if exists
-    	HttpSession session = request.getSession(false);
+    	HttpSession session = request.getSession();
+    	String userName = (String)session.getAttribute("currentSessionUser");
+    	loginService.logout(userName, session.getId());
     	if(session != null){
     		session.invalidate();
     	}
