@@ -41,7 +41,7 @@ public class User implements Serializable {
 	private Date joinDate;
 
 	public User() {
-		
+		joinDate = new Date();
 	}
 
 	public String getUserId() {
