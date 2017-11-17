@@ -35,12 +35,12 @@ public class GlobalChatMessageBean {
 		
 	}
 	
-	public List<GlobalChatMessage> findByDstName(String dstName) {
+	/*public List<GlobalChatMessage> findByDstName(String dstName) {
 		TypedQuery<GlobalChatMessage> query = em.createQuery("select u from GlobalChatMessage u where u.dstUserName = :uname", GlobalChatMessage.class)
 				.setParameter("uname", dstName);
 		return query.getResultList();
 		
-	}
+	}*/
 	
 
 	

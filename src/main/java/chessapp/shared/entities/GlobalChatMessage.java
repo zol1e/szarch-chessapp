@@ -29,30 +29,24 @@ public class GlobalChatMessage implements Serializable{
 	public String getSrcUserName() {
 		return srcUserName;
 	}
-	public String getDstUserName() {
-		return dstUserName;
-	}
-	public String getContent() {
-		return content;
+	public String getTextMsg() {
+		return textContent;
 	}
 	public Date getDate() {
 		return date;
 	}
-	@Basic
-	private String dstUserName;
 	
 	@Basic
-	private String content;
+	private String textContent;
 	
 	@Basic
 	@Temporal(TemporalType.DATE)
 	private Date date;
 	
 	public GlobalChatMessage() {}
-	public GlobalChatMessage(String src, String dst, String msg) {
+	public GlobalChatMessage(String src, String msg) {
 		srcUserName = src;
-		dstUserName = dst;
-		content = msg;
+		textContent = msg;
 		date = new Date();
 	}
 	
