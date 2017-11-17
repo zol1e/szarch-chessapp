@@ -1,6 +1,7 @@
 package chessapp.main;
 
 import java.io.IOException;
+import java.net.HttpCookie;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
@@ -12,6 +13,16 @@ public class TestEventSocket extends WebSocketAdapter {
 	@Override
 	public void onWebSocketConnect(Session sess) {
 		super.onWebSocketConnect(sess);
+		
+		// Így kell kiszedni a sessionId-t
+		String sessionId = null;
+		for(HttpCookie cookie: sess.getUpgradeRequest().getCookies()) {
+			if(cookie.getName().equals("JSESSIONID")) {
+				// Hozzá van fűzve .-al elválasztva valami, ezért a pont előtti rész kell csak nekünk
+				sessionId = cookie.getValue().split("\\.")[0];
+			}
+		}
+		
 		System.out.println("Socket Connected: " + sess);
 	}
 
