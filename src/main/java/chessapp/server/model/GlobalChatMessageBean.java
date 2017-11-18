@@ -1,11 +1,11 @@
-package chessapp.model;
+package chessapp.server.model;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import chessapp.main.EntityManagerFactorySingleton;
+import chessapp.server.EntityManagerFactorySingleton;
 import chessapp.shared.entities.GlobalChatMessage;
 
 public class GlobalChatMessageBean {

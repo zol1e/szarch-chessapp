@@ -1,4 +1,4 @@
-package chessapp.game;
+package chessapp.server.game;
 
 import java.util.concurrent.ThreadLocalRandom;
 

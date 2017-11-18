@@ -1,4 +1,4 @@
-package chessapp.main;
+package chessapp.client.main;
 
 import java.io.IOException;
 import java.net.HttpCookie;
@@ -6,9 +6,11 @@ import java.net.HttpCookie;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 
-import chessapp.game.ChesspressoUtility;
+import chessapp.server.game.ChesspressoUtility;
 
 public class TestEventSocket extends WebSocketAdapter {
+	
+	public static final String WEBSOCKET_COOKIE_SESSIONID_KEY = "JSESSIONID";
 	
 	@Override
 	public void onWebSocketConnect(Session sess) {
@@ -17,7 +19,7 @@ public class TestEventSocket extends WebSocketAdapter {
 		// Így kell kiszedni a sessionId-t
 		String sessionId = null;
 		for(HttpCookie cookie: sess.getUpgradeRequest().getCookies()) {
-			if(cookie.getName().equals("JSESSIONID")) {
+			if(cookie.getName().equals(TestEventSocket.WEBSOCKET_COOKIE_SESSIONID_KEY)) {
 				// Hozzá van fűzve .-al elválasztva valami, ezért a pont előtti rész kell csak nekünk
 				sessionId = cookie.getValue().split("\\.")[0];
 			}

@@ -1,4 +1,4 @@
-package chessapp.main;
+package chessapp.client.main;
 
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;

@@ -3,8 +3,6 @@ package chessapp.server;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import chessapp.main.EntityManagerFactorySingleton;
-
 public class ServerInitDestroyHandler implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent sce) {

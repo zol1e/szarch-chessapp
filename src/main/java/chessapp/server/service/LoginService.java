@@ -1,7 +1,7 @@
-package chessapp.service;
+package chessapp.server.service;
 
-import chessapp.model.LoginBean;
-import chessapp.model.UserBean;
+import chessapp.server.model.LoginBean;
+import chessapp.server.model.UserBean;
 import chessapp.shared.entities.User;
 import chessapp.shared.entities.UserLogin;
 

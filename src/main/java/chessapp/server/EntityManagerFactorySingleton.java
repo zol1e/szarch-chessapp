@@ -1,4 +1,4 @@
-package chessapp.main;
+package chessapp.server;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

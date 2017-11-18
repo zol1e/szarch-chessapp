@@ -1,9 +1,9 @@
-package chessapp.model;
+package chessapp.server.model;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import chessapp.main.EntityManagerFactorySingleton;
+import chessapp.server.EntityManagerFactorySingleton;
 import chessapp.shared.entities.User;
 
 public class ChessGameBean {

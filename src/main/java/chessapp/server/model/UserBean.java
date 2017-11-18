@@ -1,16 +1,12 @@
-package chessapp.model;
+package chessapp.server.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import chessapp.main.EntityManagerFactorySingleton;
+import chessapp.server.EntityManagerFactorySingleton;
 import chessapp.shared.entities.User;
-import chessapp.shared.entities.UserLogin;
 
 public class UserBean {
 

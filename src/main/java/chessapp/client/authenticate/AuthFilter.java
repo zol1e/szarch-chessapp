@@ -1,4 +1,4 @@
-package chessapp.authenticate;
+package chessapp.client.authenticate;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import chessapp.service.LoginService;
+import chessapp.server.service.LoginService;
 
 public class AuthFilter implements Filter {
 
@@ -49,7 +49,7 @@ public class AuthFilter implements Filter {
 
 		if (session == null || !isValid(session.getId(), (String)session.getAttribute("currentSessionUser"))) {
 			this.context.log("Unauthorized access request");
-			res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/login"));
+			res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/auth"));
 		} else {
 			// pass the request along the filter chain
 			chain.doFilter(request, response);
@@ -58,7 +58,6 @@ public class AuthFilter implements Filter {
 	}
 
 	private boolean isValid(String session, String userName) {
-
 		System.out.println("is valid " + userName + " with sessionId: " + session);
 		return 0 == loginService.isLoggedIn(userName, session);
 	}
