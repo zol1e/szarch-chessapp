@@ -5,3 +5,7 @@
 <h3>Global chat</h3>
 <textarea readonly="readonly" id="chatbox"></textarea><br>
 <input id="toSendGlobalMessage" type="text"> <input type="button" onclick="sendGlobalMessage()" value="Send global message">
+<div id="gameLobby">
+
+</div>
+<input type="button" onclick="createNewGame()" value="New Game">

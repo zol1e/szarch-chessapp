@@ -1,6 +1,7 @@
 package chessapp.shared.entities;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -34,7 +35,7 @@ public class PrivateChatMessage implements Serializable {
 	private String textContent;
 	
 	@Basic
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 	
 	public String getGameId() {

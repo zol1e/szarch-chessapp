@@ -13,11 +13,14 @@ import javax.json.JsonReader;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 
+import chessapp.server.GameSocketRepository;
 import chessapp.server.GlobalSocketRepository;
+import chessapp.server.game.PlayerWebsocketMapping;
 import chessapp.server.model.ChessGameBean;
 import chessapp.server.model.GlobalChatMessageBean;
 import chessapp.server.model.LoginBean;
 import chessapp.server.model.PrivateChatMessageBean;
+import chessapp.shared.entities.ChessGame;
 import chessapp.shared.entities.GlobalChatMessage;
 import chessapp.shared.entities.PrivateChatMessage;
 import chessapp.shared.entities.UserLogin;
@@ -57,6 +60,11 @@ public class WebSocketHandler extends WebSocketAdapter {
 	
 	// Http session-ben használt id mező, ami itt is fontos websocket azonosításához
 	private String httpSessionId = null;
+
+	private LoginBean loginBean = new LoginBean();
+	private PrivateChatMessageBean privateChatMsgBean = new PrivateChatMessageBean();
+	private ChessGameBean chessGameBean = new ChessGameBean();
+	private GlobalChatMessageBean globalChatMsgBean = new GlobalChatMessageBean();
 	
 	@Override
 	public void onWebSocketConnect(Session sess) {
@@ -72,7 +80,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 		}
 		
 		if(httpSessionId != null) {
-			LoginBean loginBean = new LoginBean();
 			UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
 			if(userLogin == null) {
 				sess.close();
@@ -100,7 +107,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if(type == null || type.isEmpty()) {
 			return;
 		}
-		
+		UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
 		// --- Globális üzenetek kezelése
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GLOBAL_CONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_CONNECT);
@@ -116,22 +123,13 @@ public class WebSocketHandler extends WebSocketAdapter {
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_MESSAGE);
 			String content = message.getString("content");
 			
-			LoginBean lb = new LoginBean();
-			UserLogin ul = lb.findBySessionId(httpSessionId);
-			GlobalChatMessageBean gcmb = new GlobalChatMessageBean();
-			gcmb.create(new GlobalChatMessage(ul.getUserName(), content));
+			globalChatMsgBean.create(new GlobalChatMessage(userLogin.getUserName(), content));
 			
-			/*GlobalSocketRepository.connections
-				.forEach((httpid,sess) 
-						-> sendMessage(sess, MessageType.GLOBAL, "Received global message:  " + 
-								ul.getUserName() + 
-								": " + 
-								content));*/
 			for(Entry<String, Session> entry : GlobalSocketRepository.connections.entrySet()) {
 				
 			    Session sess = entry.getValue();
 			    if (sess.isOpen())
-			    	sendMessage(sess, MessageType.GLOBAL, "Received global message:  " + ul.getUserName() + ": " + content);
+			    	sendMessage(sess, MessageType.GLOBAL, "Received global message:  " + userLogin.getUserName() + ": " + content);
 			    else
 			    	GlobalSocketRepository.removeConnection(entry.getKey(), sess);
 			}
@@ -139,27 +137,33 @@ public class WebSocketHandler extends WebSocketAdapter {
 		
 		// --- Privát üzenetek kezelése
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_CONNECT)) {
-			// TODO: add to listening on global chat
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_CONNECT);
+			
+			GameSocketRepository.addSecondPlayer(chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId(), 
+					userLogin.getUserName(), getSession());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_DISCONNECT)) {
-			// TODO: add to listening on global chat
+			//TODO ha azelőtt vége van a játéknak, mielőtt kivesszük, nem talájuk meg kivételhez :(
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_DISCONNECT);
+			ChessGame ongoing = chessGameBean.getOngoingBySomePlayer(userLogin.getUserName());
+			if (ongoing != null)
+				GameSocketRepository.removeConnection(ongoing.getChessGameId(), userLogin.getUserName());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_MESSAGE)) {
-			// TODO: send private chat message
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_MESSAGE);
 			String content = message.getString("content");
 			
-			LoginBean loginBean = new LoginBean();
-			UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
-			PrivateChatMessageBean pcmb = new PrivateChatMessageBean();
-			ChessGameBean cgb = new ChessGameBean();
+			privateChatMsgBean.create(new PrivateChatMessage(userLogin.getUserName(), content,
+					chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId()));
 			
-			pcmb.create(new PrivateChatMessage(userLogin.getUserName(), content,
-				cgb.getCurrentBySomePlayer(userLogin.getUserName()).getChessGameId()));
-			
-			sendMessage(getSession(), MessageType.PRIVATE, "Received private message:  " + content);
+			PlayerWebsocketMapping mapping = 
+					GameSocketRepository.connections.get(chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId());
+			if (mapping.getBlackPlayer() != null && mapping.getBlackPlayer().socket.isOpen())
+				sendMessage(mapping.getBlackPlayer().socket, 
+						MessageType.PRIVATE, "Received private message:  " + userLogin.getUserName() + ": " + content);
+			if (mapping.getWhitePlayer() != null && mapping.getWhitePlayer().socket.isOpen())
+				sendMessage(mapping.getWhitePlayer().socket, 
+						MessageType.PRIVATE, "Received private message:  " + userLogin.getUserName() + ": " + content);
 		}
 		
 		// --- Játék kezelése

@@ -21,8 +21,8 @@ public class ChessGameBean {
 		
 	}
 
-	public ChessGame getCurrentBySomePlayer(String userName) {
-		TypedQuery<ChessGame> query = em.createQuery("select u from ChessGame u where (u.endDate is null) and (u.whitePlayer = :uname or u.blackPlayer = :uname)", ChessGame.class)
+	public ChessGame getOngoingBySomePlayer(String userName) {
+		TypedQuery<ChessGame> query = em.createQuery("select u from ChessGame u where u.endDate = null and (u.whitePlayerName = :uname or u.blackPlayerName = :uname)", ChessGame.class)
 				.setParameter("uname", userName);
 		List<ChessGame> games = query.getResultList();
 		if (games.isEmpty())

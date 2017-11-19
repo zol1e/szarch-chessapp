@@ -29,17 +29,17 @@ public class ChessGame implements Serializable {
 	private String chessGameId;
 
 	@Basic
-	private User whitePlayer;
+	private String whitePlayerName;
 
 	@Basic
-	private User blackPlayer;
+	private String blackPlayerName;
 
 	@Basic
-	@Temporal(javax.persistence.TemporalType.DATE)
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	private Date startDate;
 	
 	@Basic
-	@Temporal(javax.persistence.TemporalType.DATE)
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	private Date endDate;
 
 	// private GameResult result;
@@ -48,10 +48,9 @@ public class ChessGame implements Serializable {
 		
 	}
 	
-	public ChessGame(User black, User white) {
-		whitePlayer = white;
-		blackPlayer = black;
-		startDate = new Date();
+	public ChessGame(String black, String white) {
+		whitePlayerName = white;
+		blackPlayerName = black;
 	}
 
 	public Date getEndDate() {
@@ -70,20 +69,20 @@ public class ChessGame implements Serializable {
 		this.chessGameId = chessGameId;
 	}
 
-	public User getWhitePlayer() {
-		return whitePlayer;
+	public String getWhitePlayer() {
+		return whitePlayerName;
 	}
 
-	public void setWhitePlayer(User whitePlayer) {
-		this.whitePlayer = whitePlayer;
+	public void setWhitePlayer(String whitePlayer) {
+		this.whitePlayerName = whitePlayer;
 	}
 
-	public User getBlackPlayer() {
-		return blackPlayer;
+	public String getBlackPlayer() {
+		return blackPlayerName;
 	}
 
-	public void setBlackPlayer(User blackPlayer) {
-		this.blackPlayer = blackPlayer;
+	public void setBlackPlayer(String blackPlayer) {
+		this.blackPlayerName = blackPlayer;
 	}
 
 	public Date getStartDate() {

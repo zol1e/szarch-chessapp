@@ -54,7 +54,9 @@ function initWebSocket() {
 		}
 		if(message.type == WS_TYPE_PRIVATE_MESSAGE && isPrivateState) {
 			// TODO: fogadni a privát üzenetet
-			document.getElementById("table").innerHTML = "<p>" + message.content + "</p>";
+			let privateChatMsg = message.content + "\n";
+			$("#privateChatBox").val($("#privateChatBox").val() + privateChatMsg);
+			//document.getElementById("table").innerHTML = "<p>" + message.content + "</p>";
 		}
 		if(message.type == WS_TYPE_GAME_MOVE && isGameState) {
 			// TODO: fogadni a lépést
@@ -171,6 +173,22 @@ function connect_private() {
 function disconnect_private() {
 	isPrivateState = false;
 	message_websocket(WS_TYPE_PRIVATE_DISCONNECT, null);
+}
+
+function createNewGame() {
+	/*var http = new XMLHttpRequest();
+	var url = "/LoginServlet";
+	var params = "uname=" + username + "&passw=" + password;
+	http.open("POST", url, true);
+	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	http.onreadystatechange = function() {
+		if(http.readyState == 4 && http.status == 200) {
+			window.location.replace(http.responseURL);
+		} else if (http.readyState == 4 && http.status == 400) {
+			$("form")[0].reset();
+		}
+	}
+	http.send(params);	*/
 }
 
 jQuery(document).ready(function () {

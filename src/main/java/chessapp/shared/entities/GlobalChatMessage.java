@@ -45,7 +45,7 @@ public class GlobalChatMessage implements Serializable{
 	private String textContent;
 	
 	@Basic
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 	
 	public GlobalChatMessage() {}
