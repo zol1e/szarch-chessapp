@@ -4,11 +4,11 @@ import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
 @SuppressWarnings("serial")
-public class TestWebSocketServlet extends WebSocketServlet {
+public class WebSocketRegistrationServlet extends WebSocketServlet {
 
 	@Override
 	public void configure(WebSocketServletFactory factory) {
-		factory.register(TestEventSocket.class);
+		factory.register(WebSocketHandler.class);
 	}
 
 }

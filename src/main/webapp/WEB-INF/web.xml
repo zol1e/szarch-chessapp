@@ -3,6 +3,47 @@
   <listener>
     <listener-class>chessapp.server.ServerInitDestroyHandler</listener-class>
   </listener>
+  
+  <!-- Part servlets -->
+  <servlet>
+    <servlet-name>GameExplorer</servlet-name>
+    <servlet-class>chessapp.client.part.GameExplorerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GameExplorer</servlet-name>
+    <url-pattern>/main/part/explorer</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>GameServlet</servlet-name>
+    <servlet-class>chessapp.client.part.GameServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GameServlet</servlet-name>
+    <url-pattern>/main/part/game</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>HomeServlet</servlet-name>
+    <servlet-class>chessapp.client.part.HomeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HomeServlet</servlet-name>
+    <url-pattern>/main/part/home</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>ProfileServlet</servlet-name>
+    <servlet-class>chessapp.client.part.ProfileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProfileServlet</servlet-name>
+    <url-pattern>/main/part/profile</url-pattern>
+  </servlet-mapping>
+  <!-- End of Part servlets -->
+  
+  
+  <!-- Default route handling -->
   <servlet>
     <servlet-name>DefaultServlet</servlet-name>
     <servlet-class>chessapp.client.main.DefaultServlet</servlet-class>
@@ -11,30 +52,8 @@
     <servlet-name>DefaultServlet</servlet-name>
     <url-pattern></url-pattern>
   </servlet-mapping>
-  <servlet>
-    <servlet-name>UserServlet</servlet-name>
-    <servlet-class>chessapp.client.main.UserServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>UserServlet</servlet-name>
-    <url-pattern>/users</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>GameServlet</servlet-name>
-    <servlet-class>chessapp.client.main.GameServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>GameServlet</servlet-name>
-    <url-pattern>/game</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>TestServlet</servlet-name>
-    <servlet-class>chessapp.client.main.TestServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>TestServlet</servlet-name>
-    <url-pattern>/test</url-pattern>
-  </servlet-mapping>
+  
+  <!-- Authentication route, login and registration page -->
   <servlet>
     <servlet-name>AuthPageServlet</servlet-name>
     <servlet-class>chessapp.client.authenticate.AuthPageServlet</servlet-class>
@@ -43,6 +62,9 @@
     <servlet-name>AuthPageServlet</servlet-name>
     <url-pattern>/auth</url-pattern>
   </servlet-mapping>
+  
+  
+  <!-- Main page rout -->
   <servlet>
     <servlet-name>Index</servlet-name>
     <servlet-class>chessapp.client.main.MainServlet</servlet-class>
@@ -51,6 +73,9 @@
     <servlet-name>Index</servlet-name>
     <url-pattern>/main/index</url-pattern>
   </servlet-mapping>
+  
+  
+  <!-- Authetication servlets -->
   <servlet>
     <servlet-name>LoginServlet</servlet-name>
     <servlet-class>chessapp.client.authenticate.LoginServlet</servlet-class>
@@ -75,14 +100,21 @@
     <servlet-name>LogoutServlet</servlet-name>
     <url-pattern>/LogoutServlet</url-pattern>
   </servlet-mapping>
+  <!-- End of Authentication servlets -->
+  
+  
+  <!-- Registering websocket connections -->
   <servlet>
-    <servlet-name>TestWebSocketServlet</servlet-name>
-    <servlet-class>chessapp.client.main.TestWebSocketServlet</servlet-class>
+    <servlet-name>WebSocketServlet</servlet-name>
+    <servlet-class>chessapp.client.main.WebSocketRegistrationServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>TestWebSocketServlet</servlet-name>
-    <url-pattern>/game/websocket/*</url-pattern>
+    <servlet-name>WebSocketServlet</servlet-name>
+    <url-pattern>/main/websocket</url-pattern>
   </servlet-mapping>
+  
+  
+  <!-- Security filter -->
   <filter>
     <filter-name>Authfilter</filter-name>
     <filter-class>chessapp.client.authenticate.AuthFilter</filter-class>
@@ -91,4 +123,24 @@
     <filter-name>Authfilter</filter-name>
     <url-pattern>/main/*</url-pattern>
   </filter-mapping>
+   
+  
+  <!-- Old servlets for proof of concept  -->
+  <servlet>
+    <servlet-name>UserServlet</servlet-name>
+    <servlet-class>chessapp.client.main.UserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserServlet</servlet-name>
+    <url-pattern>/users</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>TestServlet</servlet-name>
+    <servlet-class>chessapp.client.main.TestServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TestServlet</servlet-name>
+    <url-pattern>/test</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

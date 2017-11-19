@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import chessapp.server.EntityManagerFactorySingleton;
-import chessapp.shared.entities.User;
 import chessapp.shared.entities.UserLogin;
 
 public class LoginBean {
@@ -50,14 +49,13 @@ public class LoginBean {
 	
 	public UserLogin findBySessionId(String sessionId) {
 		TypedQuery<UserLogin> query = em.createQuery("select u from UserLogin u where u.sessionId = :sessionid", UserLogin.class)
-				.setParameter("sessonid", sessionId);
+				.setParameter("sessionid", sessionId);
 		List<UserLogin> users = query.getResultList();
 		if (users.isEmpty())
 			return null;
 		return users.get(0);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<UserLogin> findAll() {
 		TypedQuery<UserLogin> lQuery = em.createQuery("select u from UserLogin u", UserLogin.class);
 		List<UserLogin> users = lQuery.getResultList();

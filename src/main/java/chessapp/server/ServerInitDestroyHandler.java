@@ -8,6 +8,7 @@ public class ServerInitDestroyHandler implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent sce) {
 		System.out.println("Server has been started - ServerInit contextInitialized method called!");
 		EntityManagerFactorySingleton.initConnection();
+		GlobalSocketRepository.initConnections();
 		// persistence.xml-ben megadott unit-name kell a paraméterbe
 		/*EntityManagerFactory factory = Persistence.createEntityManagerFactory("chessapp");
 		EntityManager entityManager = factory.createEntityManager();
@@ -25,6 +26,7 @@ public class ServerInitDestroyHandler implements ServletContextListener {
 
 	public void contextDestroyed(ServletContextEvent sce) {
 		EntityManagerFactorySingleton.closeConnection();
+		GlobalSocketRepository.releaseConnections();
 		System.out.println("Server stoped - ServerInit contextDestroyed method called!");
 	}
 

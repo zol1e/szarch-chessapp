@@ -22,7 +22,6 @@ public class GlobalChatMessageBean {
 		em.remove(msg);
 		em.getTransaction().commit();
 	}
-
 	
 	public GlobalChatMessage findMessage(String id) {
 		return em.find(GlobalChatMessage.class, id);
@@ -32,7 +31,6 @@ public class GlobalChatMessageBean {
 		TypedQuery<GlobalChatMessage> query = em.createQuery("select u from GlobalChatMessage u where u.srcUserName = :uname", GlobalChatMessage.class)
 				.setParameter("uname", srcName);
 		return query.getResultList();
-		
 	}
 	
 	/*public List<GlobalChatMessage> findByDstName(String dstName) {
@@ -41,8 +39,4 @@ public class GlobalChatMessageBean {
 		return query.getResultList();
 		
 	}*/
-	
-
-	
-
 }
