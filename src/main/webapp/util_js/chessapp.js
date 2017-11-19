@@ -36,12 +36,15 @@ function initWebSocket() {
 
 		if(message.type == WS_TYPE_GLOBAL_MESSAGE && isGlobalState) {
 			// TODO: fogadni a globális üzenetet
+			document.getElementById("chat").innerHTML = "<p>" + message.content + "</p>";
 		}
 		if(message.type == WS_TYPE_PRIVATE_MESSAGE && isPrivateState) {
 			// TODO: fogadni a privát üzenetet
+			document.getElementById("table").innerHTML = "<p>" + message.content + "</p>";
 		}
 		if(message.type == WS_TYPE_GAME_MOVE && isGameState) {
 			// TODO: fogadni a lépést
+			document.getElementById("table").innerHTML = "<p>" + message.content + "</p>";
 		}
 	};
 	websocket.onerror = function(evt) {
@@ -60,6 +63,18 @@ function connect_websocket() {
 	} else {
 		// TODO: proper handling of WebSocket is already connected
 	}
+}
+
+function sendGlobalMessage() {
+	message_websocket(WS_TYPE_GLOBAL_MESSAGE, $("#toSendGlobalMessage").val());
+}
+
+function sendPrivateMessage() {
+	message_websocket(WS_TYPE_PRIVATE_MESSAGE, $("#toSendPrivateMessage").val());
+}
+
+function sendMoveMessage() {
+	message_websocket(WS_TYPE_GAME_MOVE, $("#toSendMoveMessage").val());
 }
 
 function message_websocket(type, content) {
@@ -83,35 +98,35 @@ function loadContent(url, contentId) {
 }
 
 function loadHomeArea() {
+	loadContent("/main/part/home", "content");
 	connect_websocket();
 	connect_global();
 	disconnect_game();
 	disconnect_private();
-	loadContent("/main/part/home", "content");
 }
 
 function loadGameArea() {
+	loadContent("/main/part/game", "content");
 	connect_websocket();
 	disconnect_global();
 	connect_game();
 	connect_private();
-	loadContent("/main/part/game", "content");
 }
 
 function loadGameExplorerArea() {
+	loadContent("/main/part/explorer", "content");
 	connect_websocket();
 	disconnect_global();
 	disconnect_game();
 	disconnect_private();
-	loadContent("/main/part/explorer", "content");
 }
 
 function loadProfileArea() {
+	loadContent("/main/part/profile", "content");
 	connect_websocket();
 	disconnect_global();
 	disconnect_game();
 	disconnect_private();
-	loadContent("/main/part/profile", "content");
 }
 
 function connect_global() {
@@ -144,6 +159,6 @@ function disconnect_private() {
 	message_websocket(WS_TYPE_PRIVATE_DISCONNECT, null);
 }
 
-$(document).ready(function() {
-	connect_websocket();
+jQuery(document).ready(function () {
+	loadHomeArea();
 });

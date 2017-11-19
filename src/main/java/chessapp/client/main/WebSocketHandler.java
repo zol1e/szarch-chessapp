@@ -24,7 +24,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 	// Játékhoz kapcsolódó vezérlő üzenet konstansok
 	public static final String WS_TYPE_GAME_CONNECT = "connect_game";
 	public static final String WS_TYPE_GAME_DISCONNECT = "disconnect_game";
-	public static final String WS_TYPE_GAME_MOVE = "move_game";
+	public static final String WS_TYPE_GAME_MOVE = "move";
 
 	// Globális chat vezérlő üzenet konstansok
 	public static final String WS_TYPE_GLOBAL_CONNECT = "connect_global";
@@ -106,6 +106,8 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GLOBAL_MESSAGE)) {
 			// TODO: send global chat message
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_MESSAGE);
+			String content = message.getString("content");
+			sendMessage(getSession(), MessageType.GLOBAL, "Received global message:  " + content);
 		}
 		
 		// --- Privát üzenetek kezelése
@@ -120,6 +122,9 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_MESSAGE)) {
 			// TODO: send private chat message
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_MESSAGE);
+			
+			String content = message.getString("content");
+			sendMessage(getSession(), MessageType.PRIVATE, "Received private message:  " + content);
 		}
 		
 		// --- Játék kezelése
@@ -134,6 +139,9 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_MOVE)) {
 			// TODO: send global chat message
 			System.out.println("WS-Type: " + WS_TYPE_GAME_MOVE);
+			
+			String content = message.getString("content");
+			sendMessage(getSession(), MessageType.GAME, "Received move message:  " + content);
 		}
 	}
 
