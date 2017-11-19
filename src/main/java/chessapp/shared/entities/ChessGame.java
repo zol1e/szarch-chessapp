@@ -28,20 +28,38 @@ public class ChessGame implements Serializable {
 	@Field(name = "_id")
 	private String chessGameId;
 
-	/*@Basic
+	@Basic
 	private User whitePlayer;
 
 	@Basic
-	private User blackPlayer;*/
+	private User blackPlayer;
 
 	@Basic
 	@Temporal(javax.persistence.TemporalType.DATE)
-	private Date creationDate;
+	private Date startDate;
+	
+	@Basic
+	@Temporal(javax.persistence.TemporalType.DATE)
+	private Date endDate;
 
 	// private GameResult result;
 
 	public ChessGame() {
 		
+	}
+	
+	public ChessGame(User black, User white) {
+		whitePlayer = white;
+		blackPlayer = black;
+		startDate = new Date();
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	public String getChessGameId() {
@@ -52,7 +70,7 @@ public class ChessGame implements Serializable {
 		this.chessGameId = chessGameId;
 	}
 
-	/*public User getWhitePlayer() {
+	public User getWhitePlayer() {
 		return whitePlayer;
 	}
 
@@ -66,13 +84,13 @@ public class ChessGame implements Serializable {
 
 	public void setBlackPlayer(User blackPlayer) {
 		this.blackPlayer = blackPlayer;
-	}*/
-
-	public Date getDate() {
-		return creationDate;
 	}
 
-	public void setDate(Date date) {
-		this.creationDate = date;
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(Date date) {
+		this.startDate = date;
 	}
 }

@@ -16,8 +16,7 @@ import org.eclipse.persistence.nosql.annotations.NoSql;
 
 @Entity
 @NoSql(dataFormat = DataFormatType.MAPPED)
-public class GlobalChatMessage implements Serializable{
-
+public class PrivateChatMessage implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -27,7 +26,20 @@ public class GlobalChatMessage implements Serializable{
 
 	@Basic
 	private String srcUserName;
-
+	
+	@Basic
+	private String gameId;
+	
+	@Basic
+	private String textContent;
+	
+	@Basic
+	@Temporal(TemporalType.DATE)
+	private Date date;
+	
+	public String getGameId() {
+		return gameId;
+	}
 	public String getMessageId() {
 		return messageId;
 	}
@@ -40,21 +52,14 @@ public class GlobalChatMessage implements Serializable{
 	public Date getDate() {
 		return date;
 	}
+
+	public PrivateChatMessage() {}
 	
-	@Basic
-	private String textContent;
-	
-	@Basic
-	@Temporal(TemporalType.DATE)
-	private Date date;
-	
-	public GlobalChatMessage() {}
-	public GlobalChatMessage(String src, String msg) {
+	public PrivateChatMessage(String src, String msg, String GameId) {
 		srcUserName = src;
 		textContent = msg;
+		gameId = GameId;
 		date = new Date();
 	}
-	
-	
 	
 }

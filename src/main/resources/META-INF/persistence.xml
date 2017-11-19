@@ -5,6 +5,8 @@
     <persistence-unit name="chessapp" transaction-type="RESOURCE_LOCAL">
         <class>chessapp.shared.entities.User</class>
         <class>chessapp.shared.entities.UserLogin</class>
+        <class>chessapp.shared.entities.GlobalChatMessage</class>
+        <class>chessapp.shared.entities.PrivateChatMessage</class>
         <class>chessapp.shared.entities.ChessGame</class>
         <properties>
             <property name="eclipselink.target-database" 

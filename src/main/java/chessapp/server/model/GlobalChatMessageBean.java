@@ -5,10 +5,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+
+
 import chessapp.server.EntityManagerFactorySingleton;
 import chessapp.shared.entities.GlobalChatMessage;
 
-public class GlobalChatMessageBean {
+public class GlobalChatMessageBean{
+
 	private EntityManager em = EntityManagerFactorySingleton.getEntityManager();
 	
 	public void create(GlobalChatMessage msg) {
@@ -32,11 +35,5 @@ public class GlobalChatMessageBean {
 				.setParameter("uname", srcName);
 		return query.getResultList();
 	}
-	
-	/*public List<GlobalChatMessage> findByDstName(String dstName) {
-		TypedQuery<GlobalChatMessage> query = em.createQuery("select u from GlobalChatMessage u where u.dstUserName = :uname", GlobalChatMessage.class)
-				.setParameter("uname", dstName);
-		return query.getResultList();
-		
-	}*/
+
 }

@@ -12,7 +12,12 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 
 import chessapp.server.GlobalSocketRepository;
+import chessapp.server.model.ChessGameBean;
+import chessapp.server.model.GlobalChatMessageBean;
 import chessapp.server.model.LoginBean;
+import chessapp.server.model.PrivateChatMessageBean;
+import chessapp.shared.entities.GlobalChatMessage;
+import chessapp.shared.entities.PrivateChatMessage;
 import chessapp.shared.entities.UserLogin;
 
 public class WebSocketHandler extends WebSocketAdapter {
@@ -107,7 +112,13 @@ public class WebSocketHandler extends WebSocketAdapter {
 			// TODO: send global chat message
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_MESSAGE);
 			String content = message.getString("content");
-			sendMessage(getSession(), MessageType.GLOBAL, "Received global message:  " + content);
+			
+			LoginBean loginBean = new LoginBean();
+			UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
+			GlobalChatMessageBean gcmb = new GlobalChatMessageBean();
+			gcmb.create(new GlobalChatMessage(userLogin.getUserName(), content));
+			
+			sendMessage(getSession(), MessageType.GLOBAL, "Received global message:  " + userLogin.getUserName() + ": " + content);
 		}
 		
 		// --- Privát üzenetek kezelése
@@ -122,8 +133,16 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_MESSAGE)) {
 			// TODO: send private chat message
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_MESSAGE);
-			
 			String content = message.getString("content");
+			
+			LoginBean loginBean = new LoginBean();
+			UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
+			PrivateChatMessageBean pcmb = new PrivateChatMessageBean();
+			ChessGameBean cgb = new ChessGameBean();
+			
+			pcmb.create(new PrivateChatMessage(userLogin.getUserName(), content,
+				cgb.getCurrentBySomePlayer(userLogin.getUserName()).getChessGameId()));
+			
 			sendMessage(getSession(), MessageType.PRIVATE, "Received private message:  " + content);
 		}
 		
