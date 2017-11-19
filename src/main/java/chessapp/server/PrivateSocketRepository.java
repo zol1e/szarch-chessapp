@@ -41,10 +41,12 @@ public class PrivateSocketRepository {
 	}
 	
 	public static void removeConnection(String gameId, String userName) {
-		if (userName.isEmpty())
+		if (userName == null || userName.isEmpty())
 			return;
 		
 		PlayerWebsocketMapping mapping = connections.get(gameId);
+		if (mapping == null)
+			return;
 		if (userName.equals(mapping.getBlackPlayer() == null ? "" : mapping.getBlackPlayer().playerName)) {
 			mapping.setBlackPlayer(null);
 		} else if (userName.equals(mapping.getWhitePlayer() == null ? "" : mapping.getWhitePlayer().playerName)) {
