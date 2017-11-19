@@ -54,9 +54,9 @@ public class PlayerWebsocketMapping {
 	}
 	
 	public void closeConnections() {
-		if (blackPlayer != null)
+		if (blackPlayer != null && blackPlayer.socket.isOpen())
 			blackPlayer.socket.close();
-		if (whitePlayer != null)
+		if (whitePlayer != null && whitePlayer.socket.isOpen())
 			whitePlayer.socket.close();
 	}
 }
