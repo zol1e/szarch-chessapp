@@ -2,6 +2,8 @@ package chessapp.client.main;
 
 import java.io.StringReader;
 import java.net.HttpCookie;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -103,6 +105,8 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GLOBAL_CONNECT)) {
 			// TODO: add to listening on global chat
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_CONNECT);
+			
+			GlobalSocketRepository.putConnection(httpSessionId, getSession());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GLOBAL_DISCONNECT)) {
 			// TODO: add to listening on global chat
@@ -113,12 +117,22 @@ public class WebSocketHandler extends WebSocketAdapter {
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_MESSAGE);
 			String content = message.getString("content");
 			
-			LoginBean loginBean = new LoginBean();
-			UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
+			LoginBean lb = new LoginBean();
+			UserLogin ul = lb.findBySessionId(httpSessionId);
 			GlobalChatMessageBean gcmb = new GlobalChatMessageBean();
-			gcmb.create(new GlobalChatMessage(userLogin.getUserName(), content));
+			gcmb.create(new GlobalChatMessage(ul.getUserName(), content));
 			
-			sendMessage(getSession(), MessageType.GLOBAL, "Received global message:  " + userLogin.getUserName() + ": " + content);
+			GlobalSocketRepository.connections
+				.forEach((httpid,sess) 
+						-> sendMessage(sess, MessageType.GLOBAL, "Received global message:  " + 
+								ul.getUserName() + 
+								": " + 
+								content));
+			/*for(Entry<String, Session> entry : GlobalSocketRepository.connections.entrySet()) {
+			    Session sess = entry.getValue();
+				sendMessage(sess, MessageType.GLOBAL, "Received global message:  " + ul.getUserName() + ": " + content);
+			}*/
+			
 		}
 		
 		// --- Privát üzenetek kezelése
