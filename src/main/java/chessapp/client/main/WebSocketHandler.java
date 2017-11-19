@@ -103,17 +103,16 @@ public class WebSocketHandler extends WebSocketAdapter {
 		
 		// --- Globális üzenetek kezelése
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GLOBAL_CONNECT)) {
-			// TODO: add to listening on global chat
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_CONNECT);
 			
 			GlobalSocketRepository.putConnection(httpSessionId, getSession());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GLOBAL_DISCONNECT)) {
-			// TODO: add to listening on global chat
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_DISCONNECT);
+			
+			GlobalSocketRepository.removeConnection(httpSessionId, getSession());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GLOBAL_MESSAGE)) {
-			// TODO: send global chat message
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_MESSAGE);
 			String content = message.getString("content");
 			
@@ -132,7 +131,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 			    Session sess = entry.getValue();
 				sendMessage(sess, MessageType.GLOBAL, "Received global message:  " + ul.getUserName() + ": " + content);
 			}*/
-			
 		}
 		
 		// --- Privát üzenetek kezelése
