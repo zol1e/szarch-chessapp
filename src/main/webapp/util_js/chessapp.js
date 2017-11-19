@@ -44,7 +44,7 @@ function initWebSocket() {
 	websocket.onmessage = function(evt) {
 		console.log("WebSocket message");	
 		
-		var json = event.data;
+		var json = evt.data;
 		var message = JSON.parse(json);
 
 		if(message.type == WS_TYPE_GLOBAL_MESSAGE && isGlobalState) {
