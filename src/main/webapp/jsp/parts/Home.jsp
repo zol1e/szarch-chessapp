@@ -6,6 +6,13 @@
 <textarea readonly="readonly" id="chatbox"></textarea><br>
 <input id="toSendGlobalMessage" type="text"> <input type="button" onclick="sendGlobalMessage()" value="Send global message">
 <div id="gameLobby">
-
+<table class="table" id="lobbyTable">
+  <tr>
+    <th>White Player</th>
+    <th>Black Player</th>
+    <th>Join</th>
+  </tr>
+</table>
 </div>
 <input type="button" onclick="createNewGame()" value="New Game">
+<input type="button" onclick="refreshTable()" value="Refresh">

@@ -176,19 +176,68 @@ function disconnect_private() {
 }
 
 function createNewGame() {
-	/*var http = new XMLHttpRequest();
-	var url = "/LoginServlet";
-	var params = "uname=" + username + "&passw=" + password;
+	var http = new XMLHttpRequest();
+	var url = "/main/CreateJoinGameServlet";
+	http.open("GET", url, true);
+	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	http.onreadystatechange = function() {
+		if(http.readyState == 4 && http.status == 200) {
+			//window.location.replace(http.responseURL);
+		}
+	}
+	http.send();
+}
+
+function joinGame(game) {
+	var http = new XMLHttpRequest();
+	var url = "/main/CreateJoinGameServlet";
+	var params = "game=" + game;
 	http.open("POST", url, true);
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
 		if(http.readyState == 4 && http.status == 200) {
-			window.location.replace(http.responseURL);
-		} else if (http.readyState == 4 && http.status == 400) {
-			$("form")[0].reset();
+			//window.location.replace(http.responseURL);
 		}
 	}
-	http.send(params);	*/
+	http.send(params);
+}
+
+function refreshTable() {
+	var http = new XMLHttpRequest();
+	var url = "/main/GetGameLobbiesServlet";
+	http.open("GET", url, true);
+	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	http.onreadystatechange = function() {
+		if(http.readyState == 4 && http.status == 200) {
+			//window.location.replace(http.responseURL);
+			loadDataToLobbyTable(http.response);
+		}
+	}
+	http.send();
+}
+function loadDataToLobbyTable(data){
+	data = JSON.parse(data);
+	var table = document.getElementById("lobbyTable");
+	while(table.rows.length > 1) {
+		  table.deleteRow(-1);
+		}
+	jQuery.each(data["gameLobbies"], function() {
+		var row = table.insertRow(-1);
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+		cell1.innerHTML = this["blackPlayer"];
+		cell2.innerHTML = this["whitePlayer"];
+		let btn = document.createElement('input');
+		btn.type = "button";
+		btn.className = "btn";
+		btn.value = "Join";
+		btn.setAttribute("game", this["game"]);
+		btn.onclick = function(event){
+			joinGame(this.getAttribute('game'));
+		};
+		cell3.appendChild(btn);
+	});
 }
 
 jQuery(document).ready(function () {

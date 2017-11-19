@@ -2,7 +2,6 @@ package chessapp.client.main;
 
 import java.io.StringReader;
 import java.net.HttpCookie;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.json.Json;
@@ -15,6 +14,7 @@ import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 
 import chessapp.server.GameSocketRepository;
 import chessapp.server.GlobalSocketRepository;
+import chessapp.server.PrivateSocketRepository;
 import chessapp.server.game.PlayerWebsocketMapping;
 import chessapp.server.model.ChessGameBean;
 import chessapp.server.model.GlobalChatMessageBean;
@@ -139,15 +139,14 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_CONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_CONNECT);
 			
-			GameSocketRepository.addSecondPlayer(chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId(), 
+			PrivateSocketRepository.addSecondPlayer(chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId(), 
 					userLogin.getUserName(), getSession());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_DISCONNECT)) {
-			//TODO ha azelőtt vége van a játéknak, mielőtt kivesszük, nem talájuk meg kivételhez :(
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_DISCONNECT);
 			ChessGame ongoing = chessGameBean.getOngoingBySomePlayer(userLogin.getUserName());
 			if (ongoing != null)
-				GameSocketRepository.removeConnection(ongoing.getChessGameId(), userLogin.getUserName());
+				PrivateSocketRepository.removeConnection(ongoing.getChessGameId(), userLogin.getUserName());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_MESSAGE)) {
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_MESSAGE);
@@ -157,7 +156,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 					chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId()));
 			
 			PlayerWebsocketMapping mapping = 
-					GameSocketRepository.connections.get(chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId());
+					PrivateSocketRepository.connections.get(chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId());
 			if (mapping.getBlackPlayer() != null && mapping.getBlackPlayer().socket.isOpen())
 				sendMessage(mapping.getBlackPlayer().socket, 
 						MessageType.PRIVATE, "Received private message:  " + userLogin.getUserName() + ": " + content);
@@ -168,19 +167,33 @@ public class WebSocketHandler extends WebSocketAdapter {
 		
 		// --- Játék kezelése
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_CONNECT)) {
-			// TODO: add to listening on global chat
 			System.out.println("WS-Type: " + WS_TYPE_GAME_CONNECT);
+			GameSocketRepository.addSecondPlayer(chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId(), 
+					userLogin.getUserName(), getSession());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_DISCONNECT)) {
-			// TODO: add to listening on global chat
 			System.out.println("WS-Type: " + WS_TYPE_GAME_DISCONNECT);
+			ChessGame ongoing = chessGameBean.getOngoingBySomePlayer(userLogin.getUserName());
+			if (ongoing != null)
+				GameSocketRepository.removeConnection(ongoing.getChessGameId(), userLogin.getUserName());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_MOVE)) {
-			// TODO: send global chat message
 			System.out.println("WS-Type: " + WS_TYPE_GAME_MOVE);
-			
 			String content = message.getString("content");
-			sendMessage(getSession(), MessageType.GAME, "Received move message:  " + content);
+			
+			privateChatMsgBean.create(new PrivateChatMessage(userLogin.getUserName(), content,
+					chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId()));
+			
+			PlayerWebsocketMapping mapping = 
+					GameSocketRepository.connections.get(chessGameBean.getOngoingBySomePlayer(userLogin.getUserName()).getChessGameId());
+			if (mapping.getBlackPlayer() != null && mapping.getBlackPlayer().socket.isOpen())
+				sendMessage(mapping.getBlackPlayer().socket, 
+						MessageType.GAME, "Received private message:  " + userLogin.getUserName() + ": " + content);
+			if (mapping.getWhitePlayer() != null && mapping.getWhitePlayer().socket.isOpen())
+				sendMessage(mapping.getWhitePlayer().socket, 
+						MessageType.GAME, "Received private message:  " + userLogin.getUserName() + ": " + content);
+			/*String content = message.getString("content");
+			sendMessage(getSession(), MessageType.GAME, "Received move message:  " + content);*/
 		}
 	}
 

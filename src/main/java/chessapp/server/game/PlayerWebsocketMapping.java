@@ -31,7 +31,7 @@ public class PlayerWebsocketMapping {
 	}
 	
 	public PlayerSocketTuple getByName(String name) {
-		if (name.isEmpty())
+		if (name == null || name.isEmpty())
 			return null;
 		if (blackPlayer != null && name.equals(blackPlayer.playerName))
 			return blackPlayer;

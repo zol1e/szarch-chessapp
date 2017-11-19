@@ -41,7 +41,24 @@
     <url-pattern>/main/part/profile</url-pattern>
   </servlet-mapping>
   <!-- End of Part servlets -->
-  
+  <!-- Game initialization Servlet  -->
+  <servlet>
+    <servlet-name>CreateJoinServlet</servlet-name>
+    <servlet-class>chessapp.client.main.CreateJoinGameServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>CreateJoinServlet</servlet-name>
+    <url-pattern>/main/CreateJoinGameServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>GetGameLobbiesServlet</servlet-name>
+    <servlet-class>chessapp.client.main.GetGameLobbiesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>GetGameLobbiesServlet</servlet-name>
+    <url-pattern>/main/GetGameLobbiesServlet</url-pattern>
+  </servlet-mapping>
+  <!-- End of Game init servlet -->
   
   <!-- Default route handling -->
   <servlet>
