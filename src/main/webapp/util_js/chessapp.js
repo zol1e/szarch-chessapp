@@ -36,7 +36,8 @@ function initWebSocket() {
 
 		if(message.type == WS_TYPE_GLOBAL_MESSAGE && isGlobalState) {
 			// TODO: fogadni a globális üzenetet
-			document.getElementById("chat").innerHTML = "<p>" + message.content + "</p>";
+			var chatMessage = message.content + "\n";
+			$("#chatbox").val($("#chatbox").val() + chatMessage);
 		}
 		if(message.type == WS_TYPE_PRIVATE_MESSAGE && isPrivateState) {
 			// TODO: fogadni a privát üzenetet
