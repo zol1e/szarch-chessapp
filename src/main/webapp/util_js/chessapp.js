@@ -27,6 +27,19 @@ function initWebSocket() {
 	websocket.onopen = function(evt) {
 		// TODO: proper handling of opening WebSocket event
 		console.log("WebSocket connected");
+		if(isGlobalState) {
+			connect_global();
+			disconnect_game();
+			disconnect_private();
+		}
+		if(isPrivateState) {
+			disconnect_global();
+			connect_private();
+		}
+		if(isGameState) {
+			disconnect_global();
+			connect_game();
+		}
 	};
 	websocket.onmessage = function(evt) {
 		console.log("WebSocket message");	
