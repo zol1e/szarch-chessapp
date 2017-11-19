@@ -121,16 +121,20 @@ public class WebSocketHandler extends WebSocketAdapter {
 			GlobalChatMessageBean gcmb = new GlobalChatMessageBean();
 			gcmb.create(new GlobalChatMessage(ul.getUserName(), content));
 			
-			GlobalSocketRepository.connections
+			/*GlobalSocketRepository.connections
 				.forEach((httpid,sess) 
 						-> sendMessage(sess, MessageType.GLOBAL, "Received global message:  " + 
 								ul.getUserName() + 
 								": " + 
-								content));
-			/*for(Entry<String, Session> entry : GlobalSocketRepository.connections.entrySet()) {
+								content));*/
+			for(Entry<String, Session> entry : GlobalSocketRepository.connections.entrySet()) {
+				
 			    Session sess = entry.getValue();
-				sendMessage(sess, MessageType.GLOBAL, "Received global message:  " + ul.getUserName() + ": " + content);
-			}*/
+			    if (sess.isOpen())
+			    	sendMessage(sess, MessageType.GLOBAL, "Received global message:  " + ul.getUserName() + ": " + content);
+			    else
+			    	GlobalSocketRepository.removeConnection(entry.getKey(), sess);
+			}
 		}
 		
 		// --- Privát üzenetek kezelése
