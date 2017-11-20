@@ -1,75 +1,73 @@
 package chessapp.server;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.eclipse.jetty.websocket.api.Session;
 
-import chessapp.server.game.PlayerSocketTuple;
-import chessapp.server.game.PlayerWebsocketMapping;
+import chessapp.server.game.Subscriber;
 
 public class PrivateSocketRepository {
-	public static ConcurrentMap<String, PlayerWebsocketMapping> connections;
+	public static ConcurrentMap<String, List<Subscriber>> connections;
 	
 	public static void initConnections() {
-		connections = new ConcurrentHashMap<String, PlayerWebsocketMapping>();
+		connections = new ConcurrentHashMap<String, List<Subscriber>>();
 	}
 	
-	public static void putConnection(String gameId, PlayerWebsocketMapping tuple) {
-		connections.put(gameId, tuple);
+	public static void putConnection(String gameId, List<Subscriber> players) {
+		connections.put(gameId, players);
 	}
 	
-	public static void putConnectionBlack(String gameId, String blackPlayer, Session bsess) {
-		if (gameId == null || blackPlayer == null || bsess == null || gameId.isEmpty() || blackPlayer.isEmpty())
-			return;
-		PlayerWebsocketMapping player = new PlayerWebsocketMapping();
-		player.setBlackPlayer(new PlayerSocketTuple(blackPlayer, bsess));
-		connections.put(gameId, player);
-	}
+
 	
-	public static void putConnectionWhite(String gameId, String whitePlayer, Session wsess) {
-		if (gameId == null || whitePlayer == null || wsess == null || gameId.isEmpty() || whitePlayer.isEmpty())
-			return;
-		PlayerWebsocketMapping player = new PlayerWebsocketMapping();
-		player.setWhitePlayer(new PlayerSocketTuple(whitePlayer, wsess));
-		connections.put(gameId, player);
-	}
-	
-	public static void putConnection(String gameId, String whitePlayer, Session wsess, String blackPlayer, Session bsess) {
-		if (gameId == null || whitePlayer == null || wsess == null || gameId.isEmpty() || whitePlayer.isEmpty()|| blackPlayer == null || blackPlayer.isEmpty())
-			return;
-		connections.put(gameId, new PlayerWebsocketMapping(blackPlayer, bsess, whitePlayer, wsess));
-	}
-	
-	public static void addSecondPlayer(String gameId, String name, Session sess) {
+	public static void addPlayer(String gameId, String name, Session sess) {
 		if (gameId == null || name == null || sess == null || gameId.isEmpty() || name.isEmpty())
 			return;
-		PlayerWebsocketMapping mpg = connections.get(gameId);
-		if (mpg == null)
-			return;
-		mpg.addSecondPlayer(name, sess);
+		List<Subscriber> players = connections.get(gameId);
+		Subscriber newSub = new Subscriber(name, sess);
+		if (players == null || players.isEmpty())
+			putConnection(gameId, new ArrayList<Subscriber>(Arrays.asList(newSub)));
+		else if (!isContain(newSub, players))
+			players.add(new Subscriber(name, sess));
+	}
+	
+	private static boolean isContain(Subscriber suspect, List<Subscriber> lst) {
+		if (suspect == null || suspect.playerName == null || suspect.playerName.isEmpty() || suspect.socket == null)
+			return false;
+		for (Subscriber s : lst) {
+			if (suspect.playerName.equals(s.playerName) /*&& suspect.socket.equals(s.socket)*/)
+				return true;
+		}
+		return false;
 	}
 	
 	public static void removeConnection(String gameId, String userName) {
 		if (gameId == null || gameId.isEmpty()  || userName == null || userName.isEmpty())
 			return;
 		
-		PlayerWebsocketMapping mapping = connections.get(gameId);
-		if (mapping == null)
+		List<Subscriber> players = connections.get(gameId);
+		if (players == null || players.isEmpty())
 			return;
-		if (userName.equals(mapping.getBlackPlayer() == null ? "" : mapping.getBlackPlayer().playerName)) {
-			mapping.setBlackPlayer(null);
-		} else if (userName.equals(mapping.getWhitePlayer() == null ? "" : mapping.getWhitePlayer().playerName)) {
-			mapping.setWhitePlayer(null);
+		for (Subscriber p : players) {
+			if (p.playerName.equals(userName)) {
+				players.remove(p);
+				break;
+			}
 		}
-		if (mapping.isBothNull())
-			connections.remove(gameId, mapping);
+		if (connections.get(gameId) == null || connections.get(gameId).isEmpty())
+			connections.remove(gameId);
 	}
 	
 	public static void releaseConnections() {
-		for(Entry<String, PlayerWebsocketMapping> connection : connections.entrySet()) {
-			connection.getValue().closeConnections();
+		for(Entry<String, List<Subscriber>> connection : connections.entrySet()) {
+			connection.getValue().forEach(x -> {
+		        if (x.socket.isOpen())
+		        	x.socket.close();
+			});
 		}
 	}
 }

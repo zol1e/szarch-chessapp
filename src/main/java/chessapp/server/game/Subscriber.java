@@ -2,10 +2,10 @@ package chessapp.server.game;
 
 import org.eclipse.jetty.websocket.api.Session;
 
-public class PlayerSocketTuple {
+public class Subscriber {
 	public String playerName;
 	public Session socket;
-	public PlayerSocketTuple (String name, Session sess) {
+	public Subscriber (String name, Session sess) {
 		playerName = name;
 		socket = sess;
 	}
