@@ -131,6 +131,7 @@ function loadGameArea() {
 
 function loadGameExplorerArea() {
 	loadContent("/main/part/explorer", "content");
+	checkExplorerTable();
 	connect_websocket();
 	disconnect_global();
 	disconnect_game();
@@ -196,26 +197,24 @@ function joinGame(game) {
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
 		if(http.readyState == 4 && http.status == 200) {
-			//window.location.replace(http.responseURL);
 		}
 	}
 	http.send(params);
 }
 
-function refreshTable() {
+function refreshLobbyTable() {
 	var http = new XMLHttpRequest();
 	var url = "/main/GetGameLobbiesServlet";
 	http.open("GET", url, true);
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
 		if(http.readyState == 4 && http.status == 200) {
-			//window.location.replace(http.responseURL);
 			loadDataToLobbyTable(http.response);
 		}
 	}
 	http.send();
 }
-function loadDataToLobbyTable(data){
+function loadDataToLobbyTable(data) {
 	data = JSON.parse(data);
 	var table = document.getElementById("lobbyTable");
 	while(table.rows.length > 1) {
@@ -238,6 +237,58 @@ function loadDataToLobbyTable(data){
 		};
 		cell3.appendChild(btn);
 	});
+}
+
+function refreshExplorerTable() {
+	var http = new XMLHttpRequest();
+	var url = "/main/ExploreLatestGamesServlet";
+	http.open("GET", url, true);
+	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	http.onreadystatechange = function() {
+		if(http.readyState == 4 && http.status == 200) {
+			loadDataToExplorerTable(http.response);
+		}
+	}
+	http.send();
+}
+
+function checkExplorerTable() {
+	if($('#gameExplorer').is(':visible')){
+		refreshExplorerTable();
+	} else {
+	    setTimeout(checkExplorerTable, 50);
+	}
+}
+
+function loadDataToExplorerTable(data) {
+	data = JSON.parse(data);
+	var table = document.getElementById("explorerTable");
+	while(table.rows.length > 1) {
+		  table.deleteRow(-1);
+		}
+	jQuery.each(data["latestGames"], function() {
+		var row = table.insertRow(-1);
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+		var cell4 = row.insertCell(3);
+		cell1.innerHTML = this["blackPlayer"];
+		cell2.innerHTML = this["whitePlayer"];
+		cell3.innerHTML = this["winner"];
+		let btn = document.createElement('input');
+		btn.type = "button";
+		btn.className = "btn";
+		btn.value = "Join";
+		btn.setAttribute("game", this["game"]);
+		btn.onclick = function(event){
+			watchExploreGame(this.getAttribute('game'));
+		};
+		cell4.appendChild(btn);
+	});
+}
+
+function watchExploreGame(game) {
+	
 }
 
 jQuery(document).ready(function () {

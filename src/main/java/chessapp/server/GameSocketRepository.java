@@ -22,22 +22,6 @@ public class GameSocketRepository {
 		connections.put(gameId, players);
 	}
 	
-	/*public static void putConnectionBlack(String gameId, String blackPlayer, Session bsess) {
-		if (gameId == null || blackPlayer == null || bsess == null || gameId.isEmpty() || blackPlayer.isEmpty())
-			return;
-		ColoredSubscriber player = new ColoredSubscriber();
-		player.setBlackPlayer(new Subscriber(blackPlayer, bsess));
-		connections.put(gameId, player);
-	}
-	
-	public static void putConnectionWhite(String gameId, String whitePlayer, Session wsess) {
-		if (gameId == null || whitePlayer == null || wsess == null || gameId.isEmpty() || whitePlayer.isEmpty())
-			return;
-		ColoredSubscriber player = new ColoredSubscriber();
-		player.setWhitePlayer(new Subscriber(whitePlayer, wsess));
-		connections.put(gameId, player);
-	}*/
-	
 	public static void addPlayer(String gameId, String userName, Session sess, boolean isBlack) {
 		if (gameId == null || gameId.isEmpty() || userName == null  || userName.isEmpty() || sess == null)
 			return;
@@ -59,21 +43,6 @@ public class GameSocketRepository {
 		return false;
 	}
 	
-	/*public static void putConnection(String gameId, String whitePlayer, Session wsess, String blackPlayer, Session bsess) {
-		if (gameId == null || whitePlayer == null || wsess == null || gameId.isEmpty() || whitePlayer.isEmpty()|| blackPlayer == null || blackPlayer.isEmpty())
-			return;
-		connections.put(gameId, new ColoredSubscriber(blackPlayer, bsess, whitePlayer, wsess));
-	}*/
-	
-	/*public static void addSecondPlayer(String gameId, String name, Session sess) {
-		if (gameId == null || name == null || sess == null || gameId.isEmpty() || name.isEmpty())
-			return;
-		ColoredSubscriber mpg = connections.get(gameId);
-		if (mpg == null)
-			return;
-		mpg.addSecondPlayer(name, sess);
-	}*/
-	
 	public static void removeConnection(String gameId, String userName) {
 		if (gameId == null || gameId.isEmpty()  || userName == null || userName.isEmpty())
 			return;
@@ -89,13 +58,6 @@ public class GameSocketRepository {
 		}
 		if (players.isEmpty())
 			connections.remove(gameId);
-		/*if (userName.equals(mapping.getBlackPlayer() == null ? "" : mapping.getBlackPlayer().playerName)) {
-			mapping.setBlackPlayer(null);
-		} else if (userName.equals(mapping.getWhitePlayer() == null ? "" : mapping.getWhitePlayer().playerName)) {
-			mapping.setWhitePlayer(null);
-		}
-		if (mapping.isBothNull())
-			connections.remove(gameId, mapping);*/
 	}
 	
 	

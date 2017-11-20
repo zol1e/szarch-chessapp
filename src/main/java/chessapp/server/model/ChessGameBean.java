@@ -41,6 +41,8 @@ public class ChessGameBean {
 		return games.get(0);
 	}
 	
+	
+	
 	public void delete(ChessGame game) {
 		em.getTransaction().begin();
 		em.remove(game);
@@ -62,6 +64,11 @@ public class ChessGameBean {
 
 	public List<ChessGame> getHalfEmptyGames() {
 		TypedQuery<ChessGame> query = em.createQuery("select u from ChessGame u where u.whitePlayerName = null or u.blackPlayerName = null", ChessGame.class);
+		return query.getResultList();
+	}
+	
+	public List<ChessGame> getLatestSomeGames(int some) {
+		TypedQuery<ChessGame> query = em.createQuery("select u from ChessGame u where u.endDate != null order by u.endDate desc", ChessGame.class).setMaxResults(some);
 		return query.getResultList();
 	}
 	

@@ -33,6 +33,11 @@ public class ChessGame implements Serializable {
 
 	@Basic
 	private String blackPlayerName;
+	
+	@Basic
+	private String result;
+
+
 
 	@Basic
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -52,7 +57,13 @@ public class ChessGame implements Serializable {
 		whitePlayerName = white;
 		blackPlayerName = black;
 	}
+	public String getResult() {
+		return result;
+	}
 
+	public void setResult(String result) {
+		this.result = result;
+	}
 	public Date getEndDate() {
 		return endDate;
 	}

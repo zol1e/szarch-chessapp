@@ -15,4 +15,4 @@
 </table>
 </div>
 <input type="button" onclick="createNewGame()" value="New Game">
-<input type="button" onclick="refreshTable()" value="Refresh">
+<input type="button" onclick="refreshLobbyTable()" value="Refresh">

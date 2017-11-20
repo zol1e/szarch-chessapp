@@ -87,7 +87,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 				sess.close();
 				return;
 			}
-			//GlobalSocketRepository.putConnection(httpSessionId, sess);
 		}
 		
 		System.out.println("Socket Connected: " + sess);
@@ -111,6 +110,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 		}
 		UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
 		ChessGame ongoing = chessGameBean.getOngoingBySomePlayer(userLogin.getUserName());
+		String ongoingId = ongoing == null ? null : ongoing.getChessGameId();
 		// --- Globális üzenetek kezelése
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GLOBAL_CONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_CONNECT);
@@ -141,7 +141,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 		// --- Privát üzenetek kezelése
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_CONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_CONNECT);
-			String ongoingId = ongoing == null ? null : ongoing.getChessGameId();
 			PrivateSocketRepository.addPlayer(ongoingId, userLogin.getUserName(), getSession());
 		}
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_DISCONNECT)) {
@@ -153,8 +152,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_MESSAGE);
 			String content = message.getString("content");
 			
-			String ongoingId = ongoing == null ? null : ongoing.getChessGameId();
-			
 			privateChatMsgBean.create(new PrivateChatMessage(userLogin.getUserName(), content, ongoingId));
 			
 			List<Subscriber> subscribers = PrivateSocketRepository.connections.get(ongoingId);
@@ -164,18 +161,11 @@ public class WebSocketHandler extends WebSocketAdapter {
 				if(x.socket.isOpen())
 				    sendMessage(x.socket, MessageType.PRIVATE, "Received private message:  " + userLogin.getUserName() + ": " + content);
 			});
-			/*if (mapping != null && mapping.getBlackPlayer() != null && mapping.getBlackPlayer().socket.isOpen())
-				sendMessage(mapping.getBlackPlayer().socket, 
-						MessageType.PRIVATE, "Received private message:  " + userLogin.getUserName() + ": " + content);
-			if (mapping != null && mapping.getWhitePlayer() != null && mapping.getWhitePlayer().socket.isOpen())
-				sendMessage(mapping.getWhitePlayer().socket, 
-						MessageType.PRIVATE, "Received private message:  " + userLogin.getUserName() + ": " + content);*/
 		}
 		
 		// --- Játék kezelése
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_CONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_GAME_CONNECT);
-			String ongoingId = ongoing == null ? null : ongoing.getChessGameId();
 			boolean amIBlack = userLogin.getUserName().equals(ongoing.getBlackPlayer());
 			GameSocketRepository.addPlayer(ongoingId, userLogin.getUserName(), getSession(), amIBlack);
 		}
@@ -187,9 +177,8 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if(message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_MOVE)) {
 			System.out.println("WS-Type: " + WS_TYPE_GAME_MOVE);
 			String content = message.getString("content");
-			String ongoingId = ongoing == null ? null : ongoing.getChessGameId();
 			
-			privateChatMsgBean.create(new PrivateChatMessage(userLogin.getUserName(), content, ongoingId));
+			//TODO persist this
 			
 			List<ColoredSubscriber> subscribers = GameSocketRepository.connections.get(ongoingId);
 			if (subscribers == null || subscribers.isEmpty())
@@ -198,15 +187,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 				if(x.socket.isOpen())
 				    sendMessage(x.socket, MessageType.GAME, "Received move message:  " + content);
 			});
-			/*PlayerWebsocketMapping mapping = GameSocketRepository.connections.get(ongoingId);
-			if (mapping != null && mapping.getBlackPlayer() != null && mapping.getBlackPlayer().socket.isOpen())
-				sendMessage(mapping.getBlackPlayer().socket, 
-						MessageType.PRIVATE, "Received private message:  " + userLogin.getUserName() + ": " + content);
-			if (mapping != null && mapping.getWhitePlayer() != null && mapping.getWhitePlayer().socket.isOpen())
-				sendMessage(mapping.getWhitePlayer().socket, 
-						MessageType.PRIVATE, "Received private message:  " + userLogin.getUserName() + ": " + content);*/
-			/*String content = message.getString("content");
-			sendMessage(getSession(), MessageType.GAME, "Received move message:  " + content);*/
 		}
 	}
 
@@ -220,9 +200,13 @@ public class WebSocketHandler extends WebSocketAdapter {
 	public void onWebSocketClose(int statusCode, String reason) {
 		super.onWebSocketClose(statusCode, reason);
 		
-		// TODO: le kell iratkozni az összes csatornáról (global, private, game)
+		UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
+		ChessGame ongoing = chessGameBean.getOngoingBySomePlayer(userLogin.getUserName());
+		String ongoingId = ongoing == null ? null : ongoing.getChessGameId();
 		
 		GlobalSocketRepository.removeConnection(httpSessionId, getSession());
+		PrivateSocketRepository.removeConnection(ongoingId, userLogin.getUserName());
+		GameSocketRepository.removeConnection(ongoingId, userLogin.getUserName());
 		
 		System.out.println("Socket Closed: [" + statusCode + "] " + reason);
 	}

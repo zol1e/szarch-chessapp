@@ -22,8 +22,6 @@ public class PrivateSocketRepository {
 		connections.put(gameId, players);
 	}
 	
-
-	
 	public static void addPlayer(String gameId, String name, Session sess) {
 		if (gameId == null || name == null || sess == null || gameId.isEmpty() || name.isEmpty())
 			return;
@@ -39,7 +37,7 @@ public class PrivateSocketRepository {
 		if (suspect == null || suspect.playerName == null || suspect.playerName.isEmpty() || suspect.socket == null)
 			return false;
 		for (Subscriber s : lst) {
-			if (suspect.playerName.equals(s.playerName) /*&& suspect.socket.equals(s.socket)*/)
+			if (suspect.playerName.equals(s.playerName))
 				return true;
 		}
 		return false;

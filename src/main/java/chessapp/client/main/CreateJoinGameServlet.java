@@ -22,7 +22,6 @@ public class CreateJoinGameServlet extends HttpServlet {
 		ChessGameBean cgb = new ChessGameBean();
 		String player = lb.findBySessionId(request.getSession().getId()).getUserName();
 		System.out.println(player + " pressed a create button");
-		//if ("createNew".equals(request.getAttribute("cmd"))) {
 		ChessGame ongoing = cgb.getOngoingBySomePlayer(player);
 		if (ongoing != null)
 			return;
@@ -34,17 +33,7 @@ public class CreateJoinGameServlet extends HttpServlet {
 		else 
 			cgb.create(null, player);
 
-		System.out.println("new lobby created");
-		/*} else if ("join".equals(request.getAttribute("cmd"))) {
-			String gameId = (String)request.getAttribute("game");
-			ChessGame game = cgb.findGame(gameId);
-			if (game.getBlackPlayer().isEmpty())
-				game.setBlackPlayer(player);
-			else if (game.getWhitePlayer().isEmpty())
-				game.setWhitePlayer(player);
-			cgb.update(game);
-			System.out.println("player added to lobby");
-		}*/		
+		System.out.println("new lobby created");	
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
