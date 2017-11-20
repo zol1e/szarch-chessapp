@@ -65,4 +65,6 @@ public class ChessGameBean {
 		return query.getResultList();
 	}
 	
+
+	
 }

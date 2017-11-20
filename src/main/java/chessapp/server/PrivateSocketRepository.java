@@ -21,27 +21,38 @@ public class PrivateSocketRepository {
 	}
 	
 	public static void putConnectionBlack(String gameId, String blackPlayer, Session bsess) {
+		if (gameId == null || blackPlayer == null || bsess == null || gameId.isEmpty() || blackPlayer.isEmpty())
+			return;
 		PlayerWebsocketMapping player = new PlayerWebsocketMapping();
 		player.setBlackPlayer(new PlayerSocketTuple(blackPlayer, bsess));
 		connections.put(gameId, player);
 	}
 	
 	public static void putConnectionWhite(String gameId, String whitePlayer, Session wsess) {
+		if (gameId == null || whitePlayer == null || wsess == null || gameId.isEmpty() || whitePlayer.isEmpty())
+			return;
 		PlayerWebsocketMapping player = new PlayerWebsocketMapping();
 		player.setWhitePlayer(new PlayerSocketTuple(whitePlayer, wsess));
 		connections.put(gameId, player);
 	}
 	
 	public static void putConnection(String gameId, String whitePlayer, Session wsess, String blackPlayer, Session bsess) {
+		if (gameId == null || whitePlayer == null || wsess == null || gameId.isEmpty() || whitePlayer.isEmpty()|| blackPlayer == null || blackPlayer.isEmpty())
+			return;
 		connections.put(gameId, new PlayerWebsocketMapping(blackPlayer, bsess, whitePlayer, wsess));
 	}
 	
 	public static void addSecondPlayer(String gameId, String name, Session sess) {
-		connections.get(gameId).addSecondPlayer(name, sess);
+		if (gameId == null || name == null || sess == null || gameId.isEmpty() || name.isEmpty())
+			return;
+		PlayerWebsocketMapping mpg = connections.get(gameId);
+		if (mpg == null)
+			return;
+		mpg.addSecondPlayer(name, sess);
 	}
 	
 	public static void removeConnection(String gameId, String userName) {
-		if (userName == null || userName.isEmpty())
+		if (gameId == null || gameId.isEmpty()  || userName == null || userName.isEmpty())
 			return;
 		
 		PlayerWebsocketMapping mapping = connections.get(gameId);

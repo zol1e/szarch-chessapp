@@ -23,6 +23,10 @@ public class CreateJoinGameServlet extends HttpServlet {
 		String player = lb.findBySessionId(request.getSession().getId()).getUserName();
 		System.out.println(player + " pressed a create button");
 		//if ("createNew".equals(request.getAttribute("cmd"))) {
+		ChessGame ongoing = cgb.getOngoingBySomePlayer(player);
+		if (ongoing != null)
+			return;
+		
 		Random rand = new Random();
 		int  n = rand.nextInt(2);
 		if (n == 0)
@@ -48,6 +52,9 @@ public class CreateJoinGameServlet extends HttpServlet {
 		ChessGameBean cgb = new ChessGameBean();
 		String player = lb.findBySessionId(request.getSession().getId()).getUserName();
 		System.out.println(player + " pressed a join button");
+		ChessGame ongoing = cgb.getOngoingBySomePlayer(player);
+		if (ongoing != null)
+			return;
 
 		String gameId = (String)request.getParameter("game");
 		ChessGame game = cgb.findGame(gameId);
