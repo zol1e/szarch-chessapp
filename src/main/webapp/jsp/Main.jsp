@@ -8,6 +8,7 @@
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet"
 		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/chessboardjs/css/chessboard-0.3.0.min.css">
 </head>
 <body>
 	<nav id="menu">
@@ -37,6 +38,13 @@
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-	<script type="text/javascript" src="${pageContext.request.contextPath}/util_js/chessapp.js"></script>
+	<!-- Chessboardjs -->
+	<script type="text/javascript" src="${pageContext.request.contextPath}/chessboardjs/js/chessboard-0.3.0.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/chessboardjs/js/json3.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/chessjs/chess.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/util_js/game.js"></script>
+	
+	<!-- Main chess application -->
+	<script src="${pageContext.request.contextPath}/util_js/chessapp.js"></script>
 </body>
 </html>

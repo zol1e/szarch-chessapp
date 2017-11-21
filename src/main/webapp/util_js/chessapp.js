@@ -94,21 +94,34 @@ function sendMoveMessage() {
 }
 
 function message_websocket(type, content) {
-	if (websocket == null) {
-		// TODO: proper handling of WebSocket is not connected
-	} else {
+	if (websocket != null && websocket.readyState == 1) {
 		var message = { type: type, content: content };
 		websocket.send(JSON.stringify(message));
+	} else {
+		// TODO: proper handling of WebSocket is not connected
 	}
 }
 
-function loadContent(url, contentId) {
+function loadContentWithDefaultCallback(url, contentId) {
+	loadContent(url, contentId, null);
+}
+
+function loadContent(url, contentId, callback) {
 	var xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			document.getElementById(contentId).innerHTML = this.responseText;
-		}
-	};
+	
+	// Load content with the default callback:
+	// Inject the response html to the content area with the given id.
+	if(callback == null) {
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				document.getElementById(contentId).innerHTML = this.responseText;
+			}
+		};
+	} else {
+		// Or use a custom callback
+		xhttp.onreadystatechange = callback;
+	}
+	
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
@@ -122,7 +135,28 @@ function loadHomeArea() {
 }
 
 function loadGameArea() {
-	loadContent("/main/part/game", "content");
+	loadContent("/main/part/game", "content", function() {
+		
+		if (this.readyState == 4 && this.status == 200) {
+			document.getElementById("content").innerHTML = this.responseText;
+			
+			// After the html is loaded, initialize the chessboard
+			boardConfig = {
+					  pieceTheme: chessFigurePicutrePath,
+					  position: "start",
+					  draggable: true,
+					  onDragStart: onDragStart,
+					  onDrop: onDrop,
+					  onSnapEnd: onSnapEnd
+			};
+			
+			board = ChessBoard("board", boardConfig);
+			game = new Chess();
+			
+			updateStatus();
+		}
+		
+	});
 	connect_websocket();
 	disconnect_global();
 	connect_game();

@@ -23,16 +23,6 @@
 
 	<script type="text/javascript">
 		var websocket = null;
-
-		var onSnapEnd = function(oldPos, newPos) {
-			document.getElementById("content").innerHTML = "Move happend";
-			if (websocket == null) {
-				document.getElementById("content").innerHTML = "Not connected, press connect button";
-				board1.position('start', true);
-			} else {
-				websocket.send(board1.fen());
-			}
-		};
 		
 		var cfg = {
 				  pieceTheme: 'chessboardjs/img/chesspieces/wikipedia/{piece}.png',
