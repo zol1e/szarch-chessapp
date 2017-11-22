@@ -14,63 +14,141 @@ var boardConfig = null;
 // Path of figure pictures, which are shown on the board
 var chessFigurePicutrePath = "/chessboardjs/img/chesspieces/wikipedia/{piece}.png";
 
+// White time left in the current game
+var whiteTimeLeft = null;
+
+// Black time left in the current game
+var blackTimeLeft = null;
+
+// Saves last date, when timer tick happened, to properly calculate the delta time
+var lastTickTime = null;
+
+// Timer object set up at game start and clear after game end
+var jsTimer = null;
+
 // do not pick up pieces if the game is over
 // only pick up pieces for the side to move
 var onDragStart = function(source, piece, position, orientation) {
-  if (game.game_over() === true ||
-      (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-      (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-    return false;
-  }
+	if (game.game_over() === true
+			|| (game.turn() === 'w' && piece.search(/^b/) !== -1)
+			|| (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+		return false;
+	}
 };
 
 var onDrop = function(source, target) {
-  var toPromote = document.querySelector('input[name="promotion"]:checked').value;
-  
-  // see if the move is legal
-  var move = game.move({
-    from: source,
-    to: target,
-    promotion: toPromote
-  });
+	var toPromote = document.querySelector('input[name="promotion"]:checked').value;
 
-  // illegal move
-  if (move === null) return 'snapback';
+	// see if the move is legal
+	var move = game.move({
+		from : source,
+		to : target,
+		promotion : toPromote
+	});
 
-  updateStatus();
+	// illegal move
+	if (move === null)
+		return 'snapback';
+
+	updateStatus();
 };
 
-// update the board position after the piece snap 
+// update the board position after the piece snap
 // for castling, en passant, pawn promotion
 var onSnapEnd = function() {
-  board.position(game.fen());
+	board.position(game.fen());
 };
 
 var updateStatus = function() {
-  var status = '';
+	// checkmate?
+	if (game.in_checkmate() === true) {
+		if(game.turn() === 'b') {
+			document.getElementById("whiteTime").innerHTML = "WON";
+			document.getElementById("blackTime").innerHTML = "LOST";
+		}
+		if(game.turn() === 'w') {
+			document.getElementById("whiteTime").innerHTML = "LOST";
+			document.getElementById("blackTime").innerHTML = "WON";
+		}
+	}
 
-  var moveColor = 'White';
-  if (game.turn() === 'b') {
-    moveColor = 'Black';
-  }
-
-  // checkmate?
-  if (game.in_checkmate() === true) {
-    status = 'Game over, ' + moveColor + ' is in checkmate.';
-  }
-
-  // draw?
-  else if (game.in_draw() === true) {
-    status = 'Game over, drawn position';
-  }
-
-  // game still on
-  else {
-    status = moveColor + ' to move';
-
-    // check?
-    if (game.in_check() === true) {
-      status += ', ' + moveColor + ' is in check';
-    }
-  }
+	// draw?
+	else if (game.in_draw() === true) {
+		document.getElementById("whiteTime").innerHTML = "DRAW";
+		document.getElementById("blackTime").innerHTML = "DRAW";
+	}
 };
+
+function startTimer() {
+	lastTickTime = new Date().getTime();
+	whiteTimeLeft = 20000;
+	blackTimeLeft = 20000;
+	timeUp = false;
+	
+	document.getElementById("whiteTime").innerHTML = formatTime(convertMillisToHMS(whiteTimeLeft));
+	document.getElementById("blackTime").innerHTML = formatTime(convertMillisToHMS(blackTimeLeft));
+
+	jsTimer = setInterval(timer, 200);
+}
+
+function timer() {
+	if (game.game_over() === true) {
+		clearInterval(jsTimer);
+		updateStatus();
+	}
+	
+	var now = new Date().getTime();
+
+	var deltaTime = now - lastTickTime;
+
+	// After counting the delta time, the new temp time should be the current time
+	lastTickTime = now;
+	
+	var timeUp = false;
+
+	if (game.turn() == 'w') {
+		whiteTimeLeft = whiteTimeLeft - deltaTime;
+		if (whiteTimeLeft > 0) {
+			var whiteTime = convertMillisToHMS(whiteTimeLeft);
+			document.getElementById("whiteTime").innerHTML = formatTime(whiteTime);
+		}
+	}
+	if (game.turn() == 'b') {
+		blackTimeLeft = blackTimeLeft - deltaTime;
+		if (blackTimeLeft > 0) {
+			var blackTime = convertMillisToHMS(blackTimeLeft);
+			document.getElementById("blackTime").innerHTML = formatTime(blackTime);
+		}
+	}
+
+	if (isGameOver()) {
+		clearInterval(jsTimer);
+	}
+	
+	updateStatus();
+}
+
+// Return an object, which convert the time given in milliseconds to an , which cuts the time to hours, minutes, seconds:
+// These can be accesed from the return value object:
+// .hour
+// .min
+// .sec
+function convertMillisToHMS(millis) {
+	var hours = Math.floor(millis / (1000 * 60 * 60));
+	var minutes = Math.floor((millis % (1000 * 60 * 60)) / (1000 * 60));
+	var seconds = Math.floor((millis % (1000 * 60)) / 1000);
+	
+	return {hour: hours, min: minutes, sec: seconds};
+}
+
+// Format the time object returned by convertMillisToHMS to displayable text value
+function formatTime(timeObject) {
+	return timeObject.hour + " h : " + timeObject.min + " m : " + timeObject.sec + " s";
+}
+
+function isGameOver() {
+	if(game.game_over() === true ||blackTimeLeft < 0 || whiteTimeLeft < 0) {
+		return true;
+	}
+	return false;
+}

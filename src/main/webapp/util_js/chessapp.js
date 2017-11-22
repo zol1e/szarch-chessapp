@@ -153,6 +153,8 @@ function loadGameArea() {
 			board = ChessBoard("board", boardConfig);
 			game = new Chess();
 			
+			startTimer();
+			
 			updateStatus();
 		}
 		

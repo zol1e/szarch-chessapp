@@ -11,9 +11,11 @@
 
 <div id="table"></div>
 
+<h3 id="blackTime"></h3>
 <div id="board" style="width: 400px">table place</div>
+<h3 id="whiteTime"></h3>
 
-<h3>Promotion:</h3>
+Promote pawns to
 <input name="promotion" type="radio" value="q" checked> Queen
 <input name="promotion" type="radio" value="n"> Knight
 <input name="promotion" type="radio" value="r"> Rook
