@@ -1,12 +1,9 @@
 package chessapp.server.model;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-
-
 
 import chessapp.server.EntityManagerFactorySingleton;
 import chessapp.shared.entities.PrivateChatMessage;

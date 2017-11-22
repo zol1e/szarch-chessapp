@@ -38,6 +38,10 @@ public class PrivateChatMessage implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 	
+	public PrivateChatMessage() {
+		super();
+	}
+	
 	public String getGameId() {
 		return gameId;
 	}
@@ -53,8 +57,6 @@ public class PrivateChatMessage implements Serializable {
 	public Date getDate() {
 		return date;
 	}
-
-	public PrivateChatMessage() {}
 	
 	public PrivateChatMessage(String src, String msg, String GameId) {
 		srcUserName = src;

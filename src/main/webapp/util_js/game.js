@@ -79,18 +79,23 @@ var updateStatus = function() {
 	}
 };
 
-function startTimer() {
+// Set the times in starting position and initialize the timer
+// 	- tickRate: the periodic call of the timer function
+//  - timeLimit: time limit for the player
+function startTimer(timeLimit, tickRate) {
 	lastTickTime = new Date().getTime();
-	whiteTimeLeft = 20000;
-	blackTimeLeft = 20000;
+	whiteTimeLeft = timeLimit;
+	blackTimeLeft = timeLimit;
 	timeUp = false;
 	
 	document.getElementById("whiteTime").innerHTML = formatTime(convertMillisToHMS(whiteTimeLeft));
 	document.getElementById("blackTime").innerHTML = formatTime(convertMillisToHMS(blackTimeLeft));
 
-	jsTimer = setInterval(timer, 200);
+	jsTimer = setInterval(timer, tickRate);
 }
 
+// Timer which can be used in a javascript interval function
+// Eg.: setIterval(timer, 200) means that this function called in every 200ms
 function timer() {
 	if (game.game_over() === true) {
 		clearInterval(jsTimer);
@@ -142,10 +147,15 @@ function convertMillisToHMS(millis) {
 }
 
 // Format the time object returned by convertMillisToHMS to displayable text value
+// Format: 
+// 		[hours left] h : [minutes left] m : [seconds left] s
 function formatTime(timeObject) {
 	return timeObject.hour + " h : " + timeObject.min + " m : " + timeObject.sec + " s";
 }
 
+// Game is over if:
+// - Black or white is out of time
+// - The position on the board (in order to the chess rules) is not playable anymore
 function isGameOver() {
 	if(game.game_over() === true || blackTimeLeft < 0 || whiteTimeLeft < 0) {
 		return true;

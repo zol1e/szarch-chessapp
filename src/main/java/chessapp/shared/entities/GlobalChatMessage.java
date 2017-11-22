@@ -17,7 +17,6 @@ import org.eclipse.persistence.nosql.annotations.NoSql;
 @Entity
 @NoSql(dataFormat = DataFormatType.MAPPED)
 public class GlobalChatMessage implements Serializable{
-
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -27,19 +26,6 @@ public class GlobalChatMessage implements Serializable{
 
 	@Basic
 	private String srcUserName;
-
-	public String getMessageId() {
-		return messageId;
-	}
-	public String getSrcUserName() {
-		return srcUserName;
-	}
-	public String getTextMsg() {
-		return textContent;
-	}
-	public Date getDate() {
-		return date;
-	}
 	
 	@Basic
 	private String textContent;
@@ -48,13 +34,49 @@ public class GlobalChatMessage implements Serializable{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 	
-	public GlobalChatMessage() {}
+	public GlobalChatMessage() {
+		super();
+	}
+	
 	public GlobalChatMessage(String src, String msg) {
 		srcUserName = src;
 		textContent = msg;
 		date = new Date();
 	}
-	
-	
-	
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public String getSrcUserName() {
+		return srcUserName;
+	}
+
+	public String getTextContent() {
+		return textContent;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
+	}
+
+	public void setSrcUserName(String srcUserName) {
+		this.srcUserName = srcUserName;
+	}
+
+	public void setTextContent(String textContent) {
+		this.textContent = textContent;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
 }

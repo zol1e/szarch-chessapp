@@ -39,9 +39,12 @@ public class UserLogin {
 		this.userName = userName;
 	}
 
-	public UserLogin() {}
+	public UserLogin() {
+		super();
+	}
 
 	public UserLogin(String username, String sessionid, String userid) {
+		super();
 		userName = username;
 		sessionId = sessionid;
 		userId = userid;

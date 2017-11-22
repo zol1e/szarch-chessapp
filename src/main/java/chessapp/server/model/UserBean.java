@@ -50,7 +50,6 @@ public class UserBean {
 		return users.get(0);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<User> findAll() {
 		TypedQuery<User> lQuery = em.createQuery("select u from User u", User.class);
 		List<User> users = lQuery.getResultList();

@@ -16,11 +16,6 @@ import org.eclipse.persistence.nosql.annotations.NoSql;
 @Entity
 @NoSql(dataFormat = DataFormatType.MAPPED)
 public class ChessGame implements Serializable {
-
-	/*
-	 * public static enum GameResult { WHITE_WON, BLACK_WON, DRAW };
-	 */
-
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -37,8 +32,6 @@ public class ChessGame implements Serializable {
 	@Basic
 	private String result;
 
-
-
 	@Basic
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	private Date startDate;
@@ -47,13 +40,12 @@ public class ChessGame implements Serializable {
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	private Date endDate;
 
-	// private GameResult result;
-
 	public ChessGame() {
-		
+		super();
 	}
 	
 	public ChessGame(String black, String white) {
+		super();
 		whitePlayerName = white;
 		blackPlayerName = black;
 	}
