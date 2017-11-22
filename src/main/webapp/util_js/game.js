@@ -61,7 +61,7 @@ var onSnapEnd = function() {
 
 var updateStatus = function() {
 	// checkmate?
-	if (game.in_checkmate() === true) {
+	if (game.in_checkmate() === true || isGameOver()) {
 		if(game.turn() === 'b') {
 			document.getElementById("whiteTime").innerHTML = "WON";
 			document.getElementById("blackTime").innerHTML = "LOST";
@@ -121,11 +121,11 @@ function timer() {
 		}
 	}
 
+	updateStatus();
+	
 	if (isGameOver()) {
 		clearInterval(jsTimer);
 	}
-	
-	updateStatus();
 }
 
 // Return an object, which convert the time given in milliseconds to an , which cuts the time to hours, minutes, seconds:
@@ -147,7 +147,7 @@ function formatTime(timeObject) {
 }
 
 function isGameOver() {
-	if(game.game_over() === true ||blackTimeLeft < 0 || whiteTimeLeft < 0) {
+	if(game.game_over() === true || blackTimeLeft < 0 || whiteTimeLeft < 0) {
 		return true;
 	}
 	return false;
