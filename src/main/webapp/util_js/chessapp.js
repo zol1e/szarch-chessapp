@@ -302,20 +302,21 @@ function loadDataToExplorerTable(data) {
 	while(table.rows.length > 1) {
 		  table.deleteRow(-1);
 		}
+
+	let fields = ["blackPlayer", "whitePlayer", "winner"];
 	jQuery.each(data["latestGames"], function() {
 		var row = table.insertRow(-1);
-		var cell1 = row.insertCell(0);
-		var cell2 = row.insertCell(1);
-		var cell3 = row.insertCell(2);
-		var cell4 = row.insertCell(3);
-		cell1.innerHTML = this["blackPlayer"];
-		cell2.innerHTML = this["whitePlayer"];
-		cell3.innerHTML = this["winner"];
+		let i = 0;
+		for (i = 0; i < fields.length; i++) {
+			var cell = row.insertCell(i);
+			cell.innerHTML = this[fields[i]];
+		}
+		var cell4 = row.insertCell(i);
 		let btn = document.createElement('input');
 		btn.type = "button";
 		btn.className = "btn";
-		btn.value = "Join";
-		btn.setAttribute("game", this["game"]);
+		btn.value = "Explore";
+		btn.setAttribute("game", this["gameId"]);
 		btn.onclick = function(event){
 			watchExploreGame(this.getAttribute('game'));
 		};
@@ -324,7 +325,36 @@ function loadDataToExplorerTable(data) {
 }
 
 function watchExploreGame(game) {
+	var http = new XMLHttpRequest();
+	var url = "/main/ExploreLatestGamesServlet";
+	var params = "game=" + game;
+	http.open("POST", url, true);
+	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	http.onreadystatechange = function() {
+		if(http.readyState == 4 && http.status == 200) {
+			fillConcreteExploredGame(http.response);
+		}
+	}
+	http.send(params);	
+}
+
+function fillConcreteExploredGame(data) {
+	data = (JSON.parse(data))["selectedGame"];
+	let fields = ["blackPlayer", "whitePlayer", "winner", "startTime", "endTime"];
+	$("#concreteExploredGame").empty();
 	
+	var table = $('<table></table>').addClass('table right');
+	var tbody = $('<tbody></tbody>');
+	table.append(tbody);
+	for (let i = 0; i < fields.length; i++) {
+		var row = $('<tr></tr>');
+		var cell1 = $('<td></td>').text(fields[i]);
+		var cell2 = $('<td></td>').text(data[fields[i]]);
+		row.append(cell1);
+		row.append(cell2);
+		tbody.append(row);
+	}
+	$('#concreteExploredGame').append(table);
 }
 
 jQuery(document).ready(function () {
