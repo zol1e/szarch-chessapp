@@ -42,24 +42,19 @@ public class ChessGame implements Serializable {
 	
 	@Basic
 	private String result;
-	
-	/** Current time left of the white player */
-	@Basic
-	private Long whiteTimeLeft;
-	
-	/** Current time left of the white player */
-	@Basic
-	private Long blackTimeLeft;
-	
-	/** 
-	 * 	Which players move
-	 *		White = "white"
-	 * 		Black = "black"
-	 * 	Or use the constants: WHITE_PLAYER, BLACK_PLAYER
+
+	/**
+	 * Current position in FEN format
 	 */
 	@Basic
-	private String onMove;
-	
+	private String fen;
+
+	/**
+	 * Game moves
+	 */
+	@Basic
+	private String moves;
+
 	/** 
 	 * 	Store the last time, when a move happened. 
 	 * 	It used to count the ellapsed time.
@@ -68,11 +63,13 @@ public class ChessGame implements Serializable {
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	private Date lastMoveTime;
 	
-	/**
-	 * Current position, in FEN format.
-	 */
+	/** Current time left of the white player */
 	@Basic
-	private String currentPosition;
+	private Long whiteTimeLeft;
+	
+	/** Current time left of the white player */
+	@Basic
+	private Long blackTimeLeft;
 
 	@Basic
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -156,14 +153,6 @@ public class ChessGame implements Serializable {
 		this.blackTimeLeft = blackTimeLeft;
 	}
 
-	public String getOnMove() {
-		return onMove;
-	}
-
-	public void setOnMove(String onMove) {
-		this.onMove = onMove;
-	}
-
 	public Date getLastMoveTime() {
 		return lastMoveTime;
 	}
@@ -171,12 +160,20 @@ public class ChessGame implements Serializable {
 	public void setLastMoveTime(Date lastMoveTime) {
 		this.lastMoveTime = lastMoveTime;
 	}
-	
-	public String getCurrentPosition() {
-		return currentPosition;
+		
+	public String getFen() {
+		return fen;
 	}
 
-	public void setCurrentPosition(String currentPosition) {
-		this.currentPosition = currentPosition;
+	public void setFen(String fen) {
+		this.fen = fen;
+	}
+	
+	public String getMoves() {
+		return moves;
+	}
+
+	public void setMoves(String moves) {
+		this.moves = moves;
 	}
 }

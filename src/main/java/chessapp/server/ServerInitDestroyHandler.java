@@ -1,5 +1,9 @@
 package chessapp.server;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -24,6 +28,11 @@ public class ServerInitDestroyHandler implements ServletContextListener {
 		entityManager.getTransaction().begin();
 		entityManager.merge(user);
 		entityManager.getTransaction().commit();*/
+		
+		// Scheduled task for refreshing chessgame times
+		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+		executor.scheduleAtFixedRate(new ChessGameRefreshTask(), 0, 3, TimeUnit.SECONDS);
+		sce.getServletContext().setAttribute("ChessGameRefreshTask", executor);
 	}
 
 	public void contextDestroyed(ServletContextEvent sce) {
@@ -31,6 +40,8 @@ public class ServerInitDestroyHandler implements ServletContextListener {
 		GlobalSocketRepository.releaseConnections();
 		GameSocketRepository.releaseConnections();
 		PrivateSocketRepository.releaseConnections();
+		ScheduledExecutorService executor =  (ScheduledExecutorService) sce.getServletContext().getAttribute("ChessGameRefreshTask");
+		executor.shutdown();
 		System.out.println("Server stoped - ServerInit contextDestroyed method called!");
 	}
 

@@ -16,6 +16,28 @@ var WS_TYPE_PRIVATE_CONNECT = "connect_private";
 var WS_TYPE_PRIVATE_DISCONNECT = "disconnect_private";
 var WS_TYPE_PRIVATE_MESSAGE = "message_private";
 
+// Game message constants
+var WS_USERNAME = "username";
+
+// Game message type constants
+var WS_TYPE_GAME_STATUS = "game_status";
+var WS_TYPE_GAME_MOVE = "move";
+
+// Status message property constants
+var WS_GAME_STATUS_WHITE_TIME = "whitetime";
+var WS_GAME_STATUS_BLACK_TIME = "blacktime";
+var WS_GAME_STATUS_FEN = "fen";
+var WS_GAME_STATUS_PGN = "pgn";
+var WS_GAME_STATUS_WHITE_USER = "whiteuser";
+var WS_GAME_STATUS_BLACK_USER = "blackuser";
+
+// Move message property constants
+var WS_MOVE_COLOR = "color";
+var WS_MOVE_FLAGS = "flags";
+var WS_MOVE_FROM = "from";
+var WS_MOVE_TO = "to";
+var WS_MOVE_PROMOTION = "promotion";
+
 // Melyik állapotban van az alkalmazás, Game-nél privát és lépés üzeneteket, Global-nál global üzeneteket fogad
 var isGameState;
 var isPrivateState;
@@ -48,19 +70,54 @@ function initWebSocket() {
 		var message = JSON.parse(json);
 
 		if(message.type == WS_TYPE_GLOBAL_MESSAGE && isGlobalState) {
-			// TODO: fogadni a globális üzenetet
 			var chatMessage = message.content + "\n";
 			$("#chatbox").val($("#chatbox").val() + chatMessage);
 		}
 		if(message.type == WS_TYPE_PRIVATE_MESSAGE && isPrivateState) {
-			// TODO: fogadni a privát üzenetet
 			let privateChatMsg = message.content + "\n";
 			$("#privateChatBox").val($("#privateChatBox").val() + privateChatMsg);
-			//document.getElementById("table").innerHTML = "<p>" + message.content + "</p>";
 		}
-		if(message.type == WS_TYPE_GAME_MOVE && isGameState) {
-			// TODO: fogadni a lépést
-			document.getElementById("table").innerHTML = "<p>" + message.content + "</p>";
+		if(message.type == WS_TYPE_GAME_STATUS && isGameState) {
+			var fen = message.fen;
+			var whitetime = message.whitetime;
+			var blacktime = message.blacktime;
+			var whiteuser = message.whiteuser;
+			var blackuser = message.blackuser;
+			var myUsername = message.username;
+			
+			game = new Chess();
+			game.load(fen);
+
+			var isMyTurn = false;
+			var tableOrientation = null;
+			if(whiteuser === myUsername) {
+				tableOrientation = "white";
+				// If white to play, this is my turn
+				if(game.turn() === 'w') {
+					isMyTurn = true;
+				}
+			} else {
+				tableOrientation = "black";
+				// If black to play, this is my turn
+				if(game.turn() === 'b') {
+					isMyTurn = true;
+				}
+			}
+			
+			// Initialize the chessboard
+			boardConfig = {
+					  pieceTheme: chessFigurePicutrePath,
+					  position: fen,
+					  draggable: isMyTurn,
+					  onDragStart: onDragStart,
+					  onDrop: onDrop,
+					  onSnapEnd: onSnapEnd,
+					  orientation: tableOrientation
+			};
+			board = ChessBoard("board", boardConfig);
+			
+			startTimer(whitetime, blacktime, 200);
+			updateStatus();
 		}
 	};
 	websocket.onerror = function(evt) {
@@ -102,6 +159,22 @@ function message_websocket(type, content) {
 	}
 }
 
+function sendMove(move, toPromote) {
+	if (websocket != null && websocket.readyState == 1) {
+		var message = { 
+				type: WS_TYPE_GAME_MOVE,
+				from: move.from, 
+				to: move.to,
+				color: move.color,
+				flags: move.flags,
+				promotion: toPromote
+		};
+		websocket.send(JSON.stringify(message));
+	} else {
+		// TODO: proper handling of WebSocket is not connected
+	}
+}
+
 function loadContentWithDefaultCallback(url, contentId) {
 	loadContent(url, contentId, null);
 }
@@ -135,33 +208,15 @@ function loadHomeArea() {
 }
 
 function loadGameArea() {
-	loadContent("/main/part/game", "content", function() {
-		
+	loadContent("/main/part/game", "content", function() {		
 		if (this.readyState == 4 && this.status == 200) {
 			document.getElementById("content").innerHTML = this.responseText;
-			
-			// After the html is loaded, initialize the chessboard
-			boardConfig = {
-					  pieceTheme: chessFigurePicutrePath,
-					  position: "start",
-					  draggable: true,
-					  onDragStart: onDragStart,
-					  onDrop: onDrop,
-					  onSnapEnd: onSnapEnd
-			};
-			
-			board = ChessBoard("board", boardConfig);
-			game = new Chess();
-			
-			startTimer();
-			
-			updateStatus();
-		}
-		
+			isGameState = true;
+			connect_game();
+		}		
 	});
 	connect_websocket();
 	disconnect_global();
-	connect_game();
 	connect_private();
 }
 
@@ -193,7 +248,6 @@ function disconnect_global() {
 }
 
 function connect_game() {
-	isGameState = true;
 	message_websocket(WS_TYPE_GAME_CONNECT, null);
 }
 
@@ -261,8 +315,8 @@ function loadDataToLobbyTable(data) {
 		var cell1 = row.insertCell(0);
 		var cell2 = row.insertCell(1);
 		var cell3 = row.insertCell(2);
-		cell1.innerHTML = this["blackPlayer"];
-		cell2.innerHTML = this["whitePlayer"];
+		cell1.innerHTML = this["whitePlayer"];
+		cell2.innerHTML = this["blackPlayer"];
 		let btn = document.createElement('input');
 		btn.type = "button";
 		btn.className = "btn";

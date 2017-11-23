@@ -45,13 +45,23 @@ public class ChessGameBean {
 	}
 
 	public void update(ChessGame newGame) {
-		delete(em.find(ChessGame.class, newGame.getChessGameId()));
-		create(newGame);
+		em.getTransaction().begin();
+		em.merge(newGame);
+		em.getTransaction().commit();
+		//delete(em.find(ChessGame.class, newGame.getChessGameId()));
+		//create(newGame);
 	}
 
+	public List<ChessGame> getOngoingChessGames() {
+		TypedQuery<ChessGame> query = em.createQuery(
+				"select u from ChessGame u where u.startDate != null and u.endDate = null", ChessGame.class);
+		List<ChessGame> games = query.getResultList();
+		return games;
+	}
+	
 	public ChessGame getOngoingBySomePlayer(String userName) {
 		TypedQuery<ChessGame> query = em.createQuery(
-				"select u from ChessGame u where u.endDate = null and (u.whitePlayerName = :uname or u.blackPlayerName = :uname)",
+				"select u from ChessGame u where u.startDate != null and u.endDate = null and (u.whitePlayerName = :uname or u.blackPlayerName = :uname)",
 				ChessGame.class).setParameter("uname", userName);
 		List<ChessGame> games = query.getResultList();
 		if (games.isEmpty()) {
@@ -75,8 +85,8 @@ public class ChessGameBean {
 		return query.getResultList();
 	}
 
-	public GameStatus getGameStatus(ChessGame chessGame) {
-		return new GameStatus(chessGame.getCurrentPosition(), chessGame.getWhiteTimeLeft(),
-				chessGame.getBlackTimeLeft(), chessGame.getOnMove());
+	public static GameStatus getGameStatus(ChessGame chessGame) {
+		return new GameStatus(chessGame.getChessGameId(), chessGame.getFen(), chessGame.getMoves(), chessGame.getWhiteTimeLeft(),
+				chessGame.getBlackTimeLeft(), chessGame.getWhitePlayer(), chessGame.getBlackPlayer());
 	}
 }

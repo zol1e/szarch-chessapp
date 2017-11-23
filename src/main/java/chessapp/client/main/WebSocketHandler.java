@@ -2,6 +2,7 @@ package chessapp.client.main;
 
 import java.io.StringReader;
 import java.net.HttpCookie;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -16,6 +17,8 @@ import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import chessapp.server.GameSocketRepository;
 import chessapp.server.GlobalSocketRepository;
 import chessapp.server.PrivateSocketRepository;
+import chessapp.server.game.ChessGameUtility;
+import chessapp.server.game.ChesspressoUtility;
 import chessapp.server.game.ColoredSubscriber;
 import chessapp.server.game.GameStatus;
 import chessapp.server.game.GameWsMessageUtility;
@@ -28,6 +31,7 @@ import chessapp.shared.entities.ChessGame;
 import chessapp.shared.entities.GlobalChatMessage;
 import chessapp.shared.entities.PrivateChatMessage;
 import chessapp.shared.entities.UserLogin;
+import chesspresso.Chess;
 
 public class WebSocketHandler extends WebSocketAdapter {
 
@@ -35,15 +39,29 @@ public class WebSocketHandler extends WebSocketAdapter {
 
 	/** Konstansok a chessapp.js-el szinkronban tartva */
 
+	public static final String WS_USERNAME = "username";
+	
 	// Játékhoz kapcsolódó vezérlő üzenet konstansok
 	public static final String WS_TYPE_GAME_CONNECT = "connect_game";
 	public static final String WS_TYPE_GAME_DISCONNECT = "disconnect_game";
-	public static final String WS_TYPE_GAME_MOVE = "move";
 	public static final String WS_TYPE_GAME_STATUS = "game_status";
-	public static final String WS_GAME_STATUS_WHITE_TIME = "game_status_whitetime";
-	public static final String WS_GAME_STATUS_BLACK_TIME = "game_status_blacktime";
-	public static final String WS_GAME_STATUS_FEN = "game_status_fen";
-
+	public static final String WS_TYPE_GAME_MOVE = "move";
+	
+	// Status message property constants
+	public static final String WS_GAME_STATUS_WHITE_TIME = "whitetime";
+	public static final String WS_GAME_STATUS_BLACK_TIME = "blacktime";
+	public static final String WS_GAME_STATUS_FEN = "fen";
+	public static final String WS_GAME_STATUS_PGN = "pgn";
+	public static final String WS_GAME_STATUS_WHITE_USER = "whiteuser";
+	public static final String WS_GAME_STATUS_BLACK_USER = "blackuser";
+	
+	// Move message property constants
+	public static final String WS_MOVE_COLOR = "color";
+	public static final String WS_MOVE_FLAGS = "flags";
+	public static final String WS_MOVE_FROM = "from";
+	public static final String WS_MOVE_TO = "to";
+	public static final String WS_MOVE_PROMOTION = "promotion";
+	
 	// Globális chat vezérlő üzenet konstansok
 	public static final String WS_TYPE_GLOBAL_CONNECT = "connect_global";
 	public static final String WS_TYPE_GLOBAL_DISCONNECT = "disconnect_global";
@@ -69,7 +87,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 
 	private LoginBean loginBean = new LoginBean();
 	private PrivateChatMessageBean privateChatMsgBean = new PrivateChatMessageBean();
-	private ChessGameBean chessGameBean = new ChessGameBean();
 	private GlobalChatMessageBean globalChatMsgBean = new GlobalChatMessageBean();
 
 	@Override
@@ -98,23 +115,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 			System.out.println("WebSocket closed, becuse no session id sent");
 			return;
 		}
-
-		// If game is in progress, send game status to the client. It can use it to set
-		// up the board.
-		// TODO: copypaste code from CreateJoinGameServlet, should be in a service
-		String userName = loginBean.findBySessionId(httpSessionId).getUserName();
-		ChessGame chessGame = chessGameBean.getOngoingBySomePlayer(userName);
-		if (chessGame != null) {
-			List<Subscriber> subscribers = PrivateSocketRepository.connections.get(chessGame.getChessGameId());
-			if (subscribers != null && !subscribers.isEmpty()) {
-				subscribers.forEach(subscriber -> {
-					if (subscriber.socket.isOpen())
-						WebSocketHandler.sendMessage(subscriber.socket, MessageType.GAME, "",
-								chessGameBean.getGameStatus(chessGame));
-				});
-			}
-		}
-
+		
 		System.out.println("Socket Connected: " + sess);
 	}
 
@@ -135,6 +136,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 			return;
 		}
 		UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
+		ChessGameBean chessGameBean = new ChessGameBean();
 		ChessGame chessGame = chessGameBean.getOngoingBySomePlayer(userLogin.getUserName());
 		String ongoingChessGameId = chessGame == null ? null : chessGame.getChessGameId();
 		// --- Globális üzenetek kezelése
@@ -195,7 +197,45 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if (message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_CONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_GAME_CONNECT);
 			boolean amIBlack = userLogin.getUserName().equals(chessGame.getBlackPlayer());
-			GameSocketRepository.addPlayer(ongoingChessGameId, userLogin.getUserName(), getSession(), amIBlack);
+			Session session = getSession();
+			
+			if (chessGame != null) {
+				Date dateNow = new Date();
+				int onMove = ChesspressoUtility.onMove(chessGame.getFen());
+
+				// TODO: ez egy paraszt kódmásolás a websocket handlerből, meg kell csinálni
+				// egységesre
+				Long lastMoveTime = chessGame.getLastMoveTime().getTime();
+				Long nowMillis = dateNow.getTime();
+				Long difference = nowMillis - lastMoveTime;
+				
+				if(Chess.WHITE == onMove ) {
+					Long whiteTimeLeftNow = chessGame.getWhiteTimeLeft() - difference;
+					if(whiteTimeLeftNow <= 0) {
+						chessGame.setWhiteTimeLeft(new Long(0));
+						chessGame.setEndDate(dateNow);
+						chessGame.setResult("white lost on time");
+					} else {
+						chessGame.setWhiteTimeLeft(whiteTimeLeftNow);
+					}
+				}
+				if(Chess.BLACK == onMove ) {
+					Long blackTimeLeftNow = chessGame.getBlackTimeLeft() - difference;
+					if(blackTimeLeftNow <= 0) {
+						chessGame.setBlackTimeLeft(new Long(0));
+						chessGame.setEndDate(dateNow);
+						chessGame.setResult("black lost on time");
+					} else {
+						chessGame.setBlackTimeLeft(blackTimeLeftNow);
+					}
+				}
+				chessGameBean.update(chessGame);
+			}
+			
+			GameSocketRepository.addPlayer(ongoingChessGameId, userLogin.getUserName(), session, amIBlack);
+			if(session.isOpen()) {
+				sendMessage(session, MessageType.GAME, "game status message ", ChessGameBean.getGameStatus(chessGame));
+			}
 		}
 		if (message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_DISCONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_GAME_DISCONNECT);
@@ -204,16 +244,66 @@ public class WebSocketHandler extends WebSocketAdapter {
 		}
 		if (message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_MOVE)) {
 			System.out.println("WS-Type: " + WS_TYPE_GAME_MOVE);
-			String move = message.getString("content");
-
-			GameStatus gameStatus = chessGameBean.getGameStatus(chessGame);
+			
+			String from = message.getString("from");
+			String to = message.getString("to");
+			String color = message.getString("color");
+			String flags = message.getString("flags");
+			String promotion = message.getString("promotion");
+			
+			String oldPosition = chessGame.getFen();
+			int onMove = ChesspressoUtility.onMove(oldPosition);
+			
+			String newPosition = ChesspressoUtility.makeMove(oldPosition, from, to, flags, color, promotion);
+			if(newPosition != null) {
+				Date dateNow = new Date();
+				chessGame.setFen(newPosition);
+				String moves = ChessGameUtility.addMoveToDBMoves(chessGame.getMoves(), from, to, flags, color, promotion);
+				chessGame.setMoves(moves);
+				
+				String resultString = ChesspressoUtility.getGameResult(newPosition);
+				
+				if(resultString != null) {
+					chessGame.setEndDate(dateNow);
+					chessGame.setResult(resultString);
+				}
+				
+				Long lastMoveTime = chessGame.getLastMoveTime().getTime();
+				Long nowMillis = dateNow.getTime();
+				Long difference = nowMillis - lastMoveTime;
+				if(Chess.WHITE == onMove ) {
+					Long whiteTimeLeftNow = chessGame.getWhiteTimeLeft() - difference;
+					if(whiteTimeLeftNow <= 0) {
+						chessGame.setWhiteTimeLeft(new Long(0));
+						chessGame.setEndDate(dateNow);
+						chessGame.setResult("white lost on time");
+					} else {
+						chessGame.setWhiteTimeLeft(whiteTimeLeftNow);
+					}
+				}
+				if(Chess.BLACK == onMove ) {
+					Long blackTimeLeftNow = chessGame.getBlackTimeLeft() - difference;
+					if(blackTimeLeftNow <= 0) {
+						chessGame.setBlackTimeLeft(new Long(0));
+						chessGame.setEndDate(dateNow);
+						chessGame.setResult("black lost on time");
+					} else {
+						chessGame.setBlackTimeLeft(blackTimeLeftNow);
+					}
+				}
+				chessGame.setLastMoveTime(dateNow);
+				
+				chessGameBean.update(chessGame);
+			}
+			GameStatus gameStatus = ChessGameBean.getGameStatus(chessGame);
 			
 			List<ColoredSubscriber> subscribers = GameSocketRepository.connections.get(ongoingChessGameId);
 			if (subscribers == null || subscribers.isEmpty())
 				return;
+
 			subscribers.forEach(x -> {
 				if (x.socket.isOpen())
-					sendMessage(x.socket, MessageType.GAME, "game status message  " + move, gameStatus);
+					sendMessage(x.socket, MessageType.GAME, "game status message ", gameStatus);
 			});
 		}
 	}
@@ -229,6 +319,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 		super.onWebSocketClose(statusCode, reason);
 
 		UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
+		ChessGameBean chessGameBean = new ChessGameBean();
 		ChessGame ongoing = chessGameBean.getOngoingBySomePlayer(userLogin.getUserName());
 		String ongoingId = ongoing == null ? null : ongoing.getChessGameId();
 
@@ -261,8 +352,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 			builder.add(WS_PROPERTY_TYPE, WS_TYPE_GLOBAL_MESSAGE);
 			builder.add(WS_PROPERTY_CONTENT, content);
 			JsonObject message = builder.build();
-
-			// TODO: writecallback-et írni a második paraméterbe
 			session.getRemote().sendString(message.toString(), null);
 			return;
 		}
@@ -270,16 +359,28 @@ public class WebSocketHandler extends WebSocketAdapter {
 			JsonObjectBuilder builder = Json.createObjectBuilder();
 			builder.add(WS_PROPERTY_TYPE, WS_TYPE_PRIVATE_MESSAGE);
 			builder.add(WS_PROPERTY_CONTENT, content);
-			JsonObject message = builder.build();
-
-			// TODO: writecallback-et írni a második paraméterbe
+			JsonObject message = builder.build();			
 			session.getRemote().sendString(message.toString(), null);
 			return;
 		}
 		if (messageType.equals(MessageType.GAME)) {
-			JsonObject message = GameWsMessageUtility.buildGameStatusMessage(gameStatus);
+			String ongoingChessGameId = gameStatus.getGameId();
+			List<ColoredSubscriber> subscribers = GameSocketRepository.connections.get(ongoingChessGameId);
 
-			// TODO: writecallback-et írni a második paraméterbe
+			String userName = null;
+			for(ColoredSubscriber subscriber : subscribers) {
+				if(subscriber.socket.equals(session)) {
+					userName = subscriber.playerName;
+					break;
+				}
+			}
+			
+			if(userName == null) {
+				System.out.println("Username error: cannot send game status");
+				return;
+			}
+			
+			JsonObject message = GameWsMessageUtility.buildGameStatusMessage(gameStatus, userName);
 			session.getRemote().sendString(message.toString(), null);
 			return;
 		}

@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import chessapp.client.main.WebSocketHandler.MessageType;
 import chessapp.server.PrivateSocketRepository;
+import chessapp.server.game.ChesspressoUtility;
+import chessapp.server.game.GameStatus;
 import chessapp.server.game.Subscriber;
 import chessapp.server.model.ChessGameBean;
 import chessapp.server.model.LoginBean;
@@ -36,12 +38,22 @@ public class CreateJoinGameServlet extends HttpServlet {
 		
 		Random rand = new Random();
 		int  n = rand.nextInt(2);
+		
+		Long timeLimit = new Long(120000);
+		ChessGame newChessGame = new ChessGame();
+		newChessGame.setWhiteTimeLeft(timeLimit);
+		newChessGame.setBlackTimeLeft(timeLimit);
+		newChessGame.setFen(ChesspressoUtility.getStartingPositionFEN());
+		newChessGame.setMoves("");
+		
 		if (n == 0) {
-			chessGameBean.create(userName, null);
+			newChessGame.setWhitePlayer(userName);
 		} else { 
-			chessGameBean.create(null, userName);
+			newChessGame.setBlackPlayer(userName);
 		}
 
+		chessGameBean.create(newChessGame);
+		
 		System.out.println("new lobby created");	
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -76,15 +88,10 @@ public class CreateJoinGameServlet extends HttpServlet {
 		
 		// Time limit currently hardcoded
 		// TODO: get parameter or decided if its okay
-		Long timeLimit = new Long(60000);
 		
 		Date currentDate = new Date();
 		chessGame.setStartDate(currentDate);
-		chessGame.setOnMove(ChessGame.WHITE);
 		chessGame.setLastMoveTime(currentDate);
-		chessGame.setWhiteTimeLeft(timeLimit);
-		chessGame.setWhiteTimeLeft(timeLimit);
-		
 		chessGameBean.update(chessGame);
 		
 		List<Subscriber> subscribers = PrivateSocketRepository.connections.get(chessGame.getChessGameId());
@@ -92,12 +99,14 @@ public class CreateJoinGameServlet extends HttpServlet {
 			return;
 		}
 		
+		GameStatus gameStatus = ChessGameBean.getGameStatus(chessGame);
+		
 		// Send message to the players, that the game has started
 		subscribers.forEach(subscriber -> {
 			if(subscriber.socket.isOpen())
-			    WebSocketHandler.sendMessage(subscriber.socket, MessageType.GAME, "Game has started", null);
+			    WebSocketHandler.sendMessage(subscriber.socket, MessageType.GAME, "Game has started", gameStatus);
 		});
 		
-		System.out.println("player added to lobby");			
+		System.out.println("player added to lobby");
 	}
 }
