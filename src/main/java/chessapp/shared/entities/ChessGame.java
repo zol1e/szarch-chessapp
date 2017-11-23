@@ -18,6 +18,17 @@ import org.eclipse.persistence.nosql.annotations.NoSql;
 public class ChessGame implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	/** Constant for "onMove" field */
+	public static final String WHITE = "white";
+	
+	/** Constant for "onMove" field */
+	public static final String BLACK = "black";
+	
+	/** Result constants */
+	public static final String DRAW = "draw";
+	public static final String CHECKMATE = "checkmate";
+	public static final String TIME_EXPIRED = "on time";
+	
 	@Id
 	@GeneratedValue
 	@Field(name = "_id")
@@ -31,6 +42,37 @@ public class ChessGame implements Serializable {
 	
 	@Basic
 	private String result;
+	
+	/** Current time left of the white player */
+	@Basic
+	private Long whiteTimeLeft;
+	
+	/** Current time left of the white player */
+	@Basic
+	private Long blackTimeLeft;
+	
+	/** 
+	 * 	Which players move
+	 *		White = "white"
+	 * 		Black = "black"
+	 * 	Or use the constants: WHITE_PLAYER, BLACK_PLAYER
+	 */
+	@Basic
+	private String onMove;
+	
+	/** 
+	 * 	Store the last time, when a move happened. 
+	 * 	It used to count the ellapsed time.
+	 */
+	@Basic
+	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
+	private Date lastMoveTime;
+	
+	/**
+	 * Current position, in FEN format.
+	 */
+	@Basic
+	private String currentPosition;
 
 	@Basic
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -39,7 +81,7 @@ public class ChessGame implements Serializable {
 	@Basic
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	private Date endDate;
-
+	
 	public ChessGame() {
 		super();
 	}
@@ -49,6 +91,7 @@ public class ChessGame implements Serializable {
 		whitePlayerName = white;
 		blackPlayerName = black;
 	}
+	
 	public String getResult() {
 		return result;
 	}
@@ -56,6 +99,7 @@ public class ChessGame implements Serializable {
 	public void setResult(String result) {
 		this.result = result;
 	}
+	
 	public Date getEndDate() {
 		return endDate;
 	}
@@ -94,5 +138,45 @@ public class ChessGame implements Serializable {
 
 	public void setStartDate(Date date) {
 		this.startDate = date;
+	}
+
+	public Long getWhiteTimeLeft() {
+		return whiteTimeLeft;
+	}
+
+	public void setWhiteTimeLeft(Long whiteTimeLeft) {
+		this.whiteTimeLeft = whiteTimeLeft;
+	}
+
+	public Long getBlackTimeLeft() {
+		return blackTimeLeft;
+	}
+
+	public void setBlackTimeLeft(Long blackTimeLeft) {
+		this.blackTimeLeft = blackTimeLeft;
+	}
+
+	public String getOnMove() {
+		return onMove;
+	}
+
+	public void setOnMove(String onMove) {
+		this.onMove = onMove;
+	}
+
+	public Date getLastMoveTime() {
+		return lastMoveTime;
+	}
+
+	public void setLastMoveTime(Date lastMoveTime) {
+		this.lastMoveTime = lastMoveTime;
+	}
+	
+	public String getCurrentPosition() {
+		return currentPosition;
+	}
+
+	public void setCurrentPosition(String currentPosition) {
+		this.currentPosition = currentPosition;
 	}
 }

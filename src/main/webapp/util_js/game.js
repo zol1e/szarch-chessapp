@@ -46,6 +46,10 @@ var onDrop = function(source, target) {
 		promotion : toPromote
 	});
 
+	console.log(move);
+	console.log(game.pgn());
+	console.log(game.fen());
+	
 	// illegal move
 	if (move === null)
 		return 'snapback';
