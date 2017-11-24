@@ -18,10 +18,8 @@ public class RegisterServlet extends HttpServlet {
 		try {
 			handleRequest(request, response);
 		} catch (ServletException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -38,7 +36,6 @@ public class RegisterServlet extends HttpServlet {
 			} else {
 				response.sendError(400, "username occupied");
 			}
-				//response.sendRedirect("login.jsp"); // error page
 		} catch (Throwable theException) {
 			System.out.println(theException);
 		}

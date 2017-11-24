@@ -35,15 +35,6 @@ public class AuthFilter implements Filter {
 		String uri = req.getRequestURI();
 		this.context.log("Requested Resource::" + uri);
 
-		/*Cookie[] cookies = req.getCookies();
-		Cookie user = null;
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if (cookie.getName().equals("user")) {
-					user = cookie;
-				}
-			}
-		}*/
 		HttpSession session = req.getSession(false);
 
 		if (session == null || !isValid(session.getId(), (String)session.getAttribute("currentSessionUser"))) {

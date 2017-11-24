@@ -19,10 +19,8 @@ public class LoginServlet extends HttpServlet {
 		try {
 			handleRequest(request, response);
 		} catch (ServletException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -30,10 +28,8 @@ public class LoginServlet extends HttpServlet {
 		try {
 			handleRequest(request, response);
 		} catch (ServletException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -48,17 +44,11 @@ public class LoginServlet extends HttpServlet {
 				HttpSession session = request.getSession();
 				session.setAttribute("currentSessionUser", request.getParameter("uname"));
 				session.setMaxInactiveInterval(30*60);
-				//Cookie userName = new Cookie("user", request.getParameter("uname"));
-				//setting session to expiry in 30 mins
-				//userName.setMaxAge(30*60);
-				//response.addCookie(userName);
 				response.setStatus(200);
 				response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/main/index")); // logged-in page
 			} else {
 				response.sendError(400);
 			}
-			
-			//response.sendRedirect("login.jsp"); // error page
 			
 		} catch (Throwable theException) {
 			System.out.println(theException);

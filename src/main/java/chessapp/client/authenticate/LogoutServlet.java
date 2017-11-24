@@ -16,18 +16,7 @@ public class LogoutServlet extends HttpServlet {
 	public LoginService loginService = new LoginService();
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	
-    	/*Cookie[] cookies = request.getCookies();
-    	
-    	if(cookies != null){
-	    	for(Cookie cookie : cookies){
-	    		if(cookie.getName().equals("user")){
-	    			loginService.logout(cookie.getValue(), request.getSession().getId());
-	    		}
-	    	}
-    	}*/
-		
-    	//invalidate the session if exists
+
     	HttpSession session = request.getSession();
     	String userName = (String)session.getAttribute("currentSessionUser");
     	loginService.logout(userName, session.getId());
