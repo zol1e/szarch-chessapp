@@ -35,6 +35,11 @@ public class CreateJoinGameServlet extends HttpServlet {
 			System.out.println(userName + " user tried to create a game, but another game is in progress");
 			return;
 		}
+		List<ChessGame> lobbies = chessGameBean.getPendingBySomePlayer(userName);
+		if (lobbies != null && !lobbies.isEmpty()) {
+			System.out.println(userName + " user tried to create a game, but has another game");
+			return;
+		}
 		
 		Random rand = new Random();
 		int  n = rand.nextInt(2);
@@ -80,10 +85,12 @@ public class CreateJoinGameServlet extends HttpServlet {
 			return;
 		}
 		
-		if (chessGame.getBlackPlayer() == null) {
+		if (chessGame.getBlackPlayer() == null && !userName.equals(chessGame.getWhitePlayer())) {
 			chessGame.setBlackPlayer(userName);
-		} else if (chessGame.getWhitePlayer() == null) {
+		} else if (chessGame.getWhitePlayer() == null && !userName.equals(chessGame.getBlackPlayer())) {
 			chessGame.setWhitePlayer(userName);
+		} else {
+			return;
 		}
 		
 		// Time limit currently hardcoded

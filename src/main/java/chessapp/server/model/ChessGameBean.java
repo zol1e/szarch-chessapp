@@ -59,6 +59,14 @@ public class ChessGameBean {
 		return games;
 	}
 	
+	public List<ChessGame> getPendingBySomePlayer(String userName) {
+		TypedQuery<ChessGame> query = em.createQuery(
+				"select u from ChessGame u where u.startDate = null and u.endDate = null and (u.whitePlayerName = :uname or u.blackPlayerName = :uname)",
+				ChessGame.class).setParameter("uname", userName);
+		List<ChessGame> games = query.getResultList();
+		return games;
+	}
+	
 	public ChessGame getOngoingBySomePlayer(String userName) {
 		TypedQuery<ChessGame> query = em.createQuery(
 				"select u from ChessGame u where u.startDate != null and u.endDate = null and (u.whitePlayerName = :uname or u.blackPlayerName = :uname)",
