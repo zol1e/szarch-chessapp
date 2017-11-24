@@ -57,7 +57,7 @@ public class ChessGame implements Serializable {
 
 	/** 
 	 * 	Store the last time, when a move happened. 
-	 * 	It used to count the ellapsed time.
+	 * 	It used to count the elapsed time.
 	 */
 	@Basic
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)

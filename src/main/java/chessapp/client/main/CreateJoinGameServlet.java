@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import chessapp.client.main.WebSocketHandler.MessageType;
+import chessapp.server.GameSocketRepository;
 import chessapp.server.PrivateSocketRepository;
 import chessapp.server.game.ChesspressoUtility;
+import chessapp.server.game.ColoredSubscriber;
 import chessapp.server.game.GameStatus;
 import chessapp.server.game.Subscriber;
 import chessapp.server.model.ChessGameBean;
@@ -101,7 +103,7 @@ public class CreateJoinGameServlet extends HttpServlet {
 		chessGame.setLastMoveTime(currentDate);
 		chessGameBean.update(chessGame);
 		
-		List<Subscriber> subscribers = PrivateSocketRepository.connections.get(chessGame.getChessGameId());
+		List<ColoredSubscriber> subscribers = GameSocketRepository.connections.get(chessGame.getChessGameId());
 		if (subscribers == null || subscribers.isEmpty()) {
 			return;
 		}
