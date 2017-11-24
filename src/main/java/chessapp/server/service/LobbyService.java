@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
+
 import chessapp.client.main.WebSocketHandler;
 import chessapp.client.main.WebSocketHandler.MessageType;
 import chessapp.server.GameSocketRepository;
@@ -71,22 +75,24 @@ public class LobbyService {
 
 	public int joinLobby(String sessionId, String gameId) {
 		if (gameId == null || gameId.isEmpty()|| sessionId == null || sessionId.isEmpty()) {
-			return 401;
+			return 400;
 		}
 		String userName = loginBean.findBySessionId(sessionId).getUserName();
 		if (userName == null || userName.isEmpty()) {
-			return 401;
+			return 400;
 		}
 		ChessGame ongoing = chessGameBean.getOngoingBySomePlayer(userName);
+		
+		List<ChessGame> pending = chessGameBean.getPendingBySomePlayer(userName);
 		ChessGame chessGame = chessGameBean.findGame(gameId);
 		
-		if (ongoing != null || chessGame == null) {
-			return 401;
+		if (ongoing != null || chessGame == null || (pending != null && !pending.isEmpty())) {
+			return 400;
 		}
 		
 		boolean success = setSecondPlayer(userName, chessGame);
 		if (!success)
-			return 401;
+			return 400;
 		
 		// Time limit currently hardcoded
 		// TODO: get parameter or decided if its okay
@@ -128,6 +134,26 @@ public class LobbyService {
 
 	private boolean isBlackSeatFree(String userName, ChessGame chessGame) {
 		return chessGame.getBlackPlayer() == null && !userName.equals(chessGame.getWhitePlayer());
+	}
+
+	public int getPendingLobbies(JsonObjectBuilder objectBuilder) {
+		List<ChessGame> games = chessGameBean.getHalfEmptyGames();
+		
+		JsonArrayBuilder tableRows = Json.createArrayBuilder();
+        
+		for(ChessGame game : games) {
+			tableRows.add(makeSingleLobbyTableRow(game));
+		}
+		objectBuilder.add("gameLobbies", tableRows);
+		return 200;
+	}
+
+	private JsonObjectBuilder makeSingleLobbyTableRow(ChessGame game) {
+		JsonObjectBuilder gameBuilder = Json.createObjectBuilder()
+				.add("blackPlayer", game.getBlackPlayer() == null ? "" : game.getBlackPlayer())
+				.add("whitePlayer", game.getWhitePlayer() == null ? "" : game.getWhitePlayer())
+				.add("game", game.getChessGameId());
+		return gameBuilder;
 	}
 
 }

@@ -30,17 +30,10 @@ public class ExploreLatestGamesServlet extends HttpServlet {
 		int status = exploreService.makeResponse(gameId, objectBuilder);
 		response.setStatus(status);
 		if (status == 200)
-			writeResponse(response, objectBuilder);
+			JsonResponseWriterHelper.writeResponse(response, objectBuilder);
 		else
 			response.sendError(status);
 	}
 	
-	private void writeResponse(HttpServletResponse response, JsonObjectBuilder objectBuilder) {
-		try(Writer writer = new StringWriter()) {
-		    Json.createWriter(writer).write(objectBuilder.build());
-		    response.getWriter().write(writer.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+
 }

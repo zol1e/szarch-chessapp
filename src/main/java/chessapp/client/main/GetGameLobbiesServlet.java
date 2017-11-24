@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import chessapp.server.model.ChessGameBean;
+import chessapp.server.service.LobbyService;
 import chessapp.shared.entities.ChessGame;
 
 public class GetGameLobbiesServlet  extends HttpServlet {
@@ -21,31 +22,16 @@ public class GetGameLobbiesServlet  extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-			ChessGameBean cgb = new ChessGameBean();
-			response.setStatus(200);
-			List<ChessGame> games = cgb.getHalfEmptyGames();
-			
-			JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-            
-			for(ChessGame game : games) {
-				JsonObjectBuilder gameBuilder = Json.createObjectBuilder()
-						.add("blackPlayer", game.getBlackPlayer() == null ? "" : game.getBlackPlayer())
-						.add("whitePlayer", game.getWhitePlayer() == null ? "" : game.getWhitePlayer())
-						.add("game", game.getChessGameId());
+		
+		LobbyService lobbyService = new LobbyService();
 
-			    arrayBuilder.add(gameBuilder.build());
-			}
-			JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
-			objectBuilder.add("gameLobbies", arrayBuilder);
-			
-			
-	        
-			try(Writer writer = new StringWriter()) {
-			    Json.createWriter(writer).write(objectBuilder.build());
-			    response.getWriter().write(writer.toString());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+		int status = lobbyService.getPendingLobbies(objectBuilder);
+		response.setStatus(status);
+		if (status == 200)
+			JsonResponseWriterHelper.writeResponse(response, objectBuilder);
+		else
+			response.sendError(status);
 	}
 
 }
