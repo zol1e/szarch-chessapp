@@ -90,7 +90,7 @@ public class LobbyService {
 			return 400;
 		}
 		
-		boolean success = setSecondPlayer(userName, chessGame);
+		boolean success = addPlayerToGame(userName, chessGame);
 		if (!success)
 			return 400;
 		
@@ -117,7 +117,7 @@ public class LobbyService {
 		return 200;
 	}
 
-	private boolean setSecondPlayer(String userName, ChessGame chessGame) {
+	private boolean addPlayerToGame(String userName, ChessGame chessGame) {
 		if (isBlackSeatFree(userName, chessGame)) {
 			chessGame.setBlackPlayer(userName);
 		} else if (isWhiteSeatFree(userName, chessGame)) {
