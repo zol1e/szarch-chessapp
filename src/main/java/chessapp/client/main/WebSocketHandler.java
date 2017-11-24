@@ -124,9 +124,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 		super.onWebSocketText(messageString);
 		System.out.println("Received TEXT message: " + messageString);
 
-		// ChesspressoUtility chessUtility = new ChesspressoUtility();
-		// String serverMove = chessUtility.generateRandomMove(message);
-
 		JsonReader reader = Json.createReader(new StringReader(messageString));
 		JsonObject message = reader.readObject();
 		reader.close();
@@ -183,7 +180,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 		}
 		if (message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_MESSAGE)) {
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_MESSAGE);
-			String content = message.getString("content");
+			String content = message.getString(WS_PROPERTY_CONTENT);
 
 			privateChatMsgBean.create(new PrivateChatMessage(userLogin.getUserName(), content, chessGame.getChessGameId()));
 
@@ -248,11 +245,11 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if (message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_MOVE)) {
 			System.out.println("WS-Type: " + WS_TYPE_GAME_MOVE);
 			
-			String from = message.getString("from");
-			String to = message.getString("to");
-			String color = message.getString("color");
-			String flags = message.getString("flags");
-			String promotion = message.getString("promotion");
+			String from = message.getString(WS_MOVE_FROM);
+			String to = message.getString(WS_MOVE_TO);
+			String color = message.getString(WS_MOVE_COLOR);
+			String flags = message.getString(WS_MOVE_FLAGS);
+			String promotion = message.getString(WS_MOVE_PROMOTION);
 			
 			String oldPosition = chessGame.getFen();
 			int onMove = ChesspressoUtility.onMove(oldPosition);

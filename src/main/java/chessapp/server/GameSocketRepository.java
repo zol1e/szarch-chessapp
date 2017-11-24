@@ -22,6 +22,10 @@ public class GameSocketRepository {
 		connections.put(gameId, players);
 	}
 	
+	public static List<ColoredSubscriber> getSubscribers(String gameId) {
+		return connections.get(gameId);
+	}
+	
 	public static void addPlayer(String gameId, String userName, Session sess, boolean isBlack) {
 		if (gameId == null || gameId.isEmpty() || userName == null  || userName.isEmpty() || sess == null)
 			return;
@@ -37,7 +41,7 @@ public class GameSocketRepository {
 		if (suspect == null || suspect.playerName == null || suspect.playerName.isEmpty() || suspect.socket == null)
 			return false;
 		for (ColoredSubscriber s : lst) {
-			if (suspect.playerName.equals(s.playerName) /*&& suspect.socket.equals(s.socket) && suspect.isBlack == s.isBlack*/)
+			if (suspect.playerName.equals(s.playerName))
 				return true;
 		}
 		return false;

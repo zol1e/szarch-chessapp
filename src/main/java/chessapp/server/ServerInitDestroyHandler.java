@@ -15,19 +15,6 @@ public class ServerInitDestroyHandler implements ServletContextListener {
 		GlobalSocketRepository.initConnections();
 		GameSocketRepository.initConnections();
 		PrivateSocketRepository.initConnections();
-		// persistence.xml-ben megadott unit-name kell a paraméterbe
-		/*EntityManagerFactory factory = Persistence.createEntityManagerFactory("chessapp");
-		EntityManager entityManager = factory.createEntityManager();
-		
-		User user = new User();
-		user.setNickName("zol1e");
-		user.setFirstName("Zoltán");
-		user.setLastName("Szegedi");
-		user.setJoinDate(new Date());
-		
-		entityManager.getTransaction().begin();
-		entityManager.merge(user);
-		entityManager.getTransaction().commit();*/
 		
 		// Scheduled task for refreshing chessgame times
 		ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();

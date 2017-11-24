@@ -26,12 +26,10 @@ public class ChessGameBean {
 	}
 
 	public ChessGame findGame(String id) {
-		System.out.println("looking for game with id: " + id);
 		TypedQuery<ChessGame> query = em
 				.createQuery("select u from ChessGame u where u.chessGameId = :id", ChessGame.class)
 				.setParameter("id", id);
 		List<ChessGame> games = query.getResultList();
-		System.out.println("found: " + games.size() + " pieces");
 		if (games.isEmpty()) {
 			return null;
 		}
