@@ -12,11 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import chessapp.client.main.WebSocketHandler.MessageType;
 import chessapp.server.GameSocketRepository;
-import chessapp.server.PrivateSocketRepository;
 import chessapp.server.game.ChesspressoUtility;
 import chessapp.server.game.ColoredSubscriber;
 import chessapp.server.game.GameStatus;
-import chessapp.server.game.Subscriber;
 import chessapp.server.model.ChessGameBean;
 import chessapp.server.model.LoginBean;
 import chessapp.shared.entities.ChessGame;

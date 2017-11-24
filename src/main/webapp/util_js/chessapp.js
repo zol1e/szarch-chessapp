@@ -389,12 +389,12 @@ function watchExploreGame(game) {
 			fillConcreteExploredGame(http.response);
 		}
 	}
-	http.send(params);	
+	http.send(params);
 }
 
 function fillConcreteExploredGame(data) {
 	data = (JSON.parse(data))["selectedGame"];
-	let fields = ["blackPlayer", "whitePlayer", "winner", "startTime", "endTime"];
+	let fields = Object.keys(data);
 	$("#concreteExploredGame").empty();
 	
 	var table = $('<table></table>').addClass('table right');
