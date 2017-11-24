@@ -279,10 +279,10 @@ function createNewGame() {
 	http.send();
 }
 
-function joinGame(game) {
+function joinGame(game, attname) {
 	var http = new XMLHttpRequest();
 	var url = "/main/CreateJoinGameServlet";
-	var params = "game=" + game;
+	var params = "game=" + game + "&func=" + attname;
 	http.open("POST", url, true);
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
@@ -320,14 +320,16 @@ function loadDataToLobbyTable(data) {
 		let btn = document.createElement('input');
 		btn.type = "button";
 		btn.className = "btn";
-		btn.value = "Join";
+		btn.value = this["btnname"];
+		btn.setAttribute("func", this["btnname"]);
 		btn.setAttribute("game", this["game"]);
 		btn.onclick = function(event){
-			joinGame(this.getAttribute('game'));
+			joinGame(this.getAttribute('game'), this.getAttribute('func'));
 		};
 		cell3.appendChild(btn);
 	});
 }
+
 
 function refreshExplorerTable() {
 	var http = new XMLHttpRequest();

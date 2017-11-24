@@ -29,8 +29,8 @@ public class LobbyService {
 		
 		String userName = loginBean.findBySessionId(sessionId).getUserName();
 		
-		if (hasOngoingGame(userName) || hasPendingGame(userName)) {
-			return 401;
+		if (userName == null || userName.isEmpty() || hasOngoingGame(userName) || hasPendingGame(userName)) {
+			return 400;
 		}
 				
 		Long timeLimit = new Long(120000);
@@ -136,24 +136,54 @@ public class LobbyService {
 		return chessGame.getBlackPlayer() == null && !userName.equals(chessGame.getWhitePlayer());
 	}
 
-	public int getPendingLobbies(JsonObjectBuilder objectBuilder) {
+	public int getPendingLobbies(JsonObjectBuilder objectBuilder, String sessionId) {
 		List<ChessGame> games = chessGameBean.getHalfEmptyGames();
-		
+		String userName = loginBean.findBySessionId(sessionId).getUserName();
+		if (userName == null || userName.isEmpty()) {
+			return 400;
+		}
 		JsonArrayBuilder tableRows = Json.createArrayBuilder();
         
 		for(ChessGame game : games) {
-			tableRows.add(makeSingleLobbyTableRow(game));
+			tableRows.add(makeSingleLobbyTableRow(game, isInGame(userName, game) ? "Cancel" : "Join"));
 		}
 		objectBuilder.add("gameLobbies", tableRows);
 		return 200;
 	}
+	
+	private boolean isInGame(String userName, ChessGame chessGame) {
+		if (userName == null || userName.isEmpty())
+			return false;
+		String black = chessGame.getBlackPlayer();
+		String white = chessGame.getWhitePlayer();
+		if (userName.equals(black) || userName.equals(white))
+			return true;
+		return false;
+	}
 
-	private JsonObjectBuilder makeSingleLobbyTableRow(ChessGame game) {
+	private JsonObjectBuilder makeSingleLobbyTableRow(ChessGame game, String func) {
 		JsonObjectBuilder gameBuilder = Json.createObjectBuilder()
 				.add("blackPlayer", game.getBlackPlayer() == null ? "" : game.getBlackPlayer())
 				.add("whitePlayer", game.getWhitePlayer() == null ? "" : game.getWhitePlayer())
+				.add("btnname", func)
 				.add("game", game.getChessGameId());
 		return gameBuilder;
+	}
+
+	public int cancelLobby(String sessionId, String gameId) {
+		String userName = loginBean.findBySessionId(sessionId).getUserName();
+		if (userName == null || userName.isEmpty())
+			return 400;
+		List<ChessGame> pending = chessGameBean.getPendingBySomePlayer(userName);
+		if (hasOngoingGame(userName) || (pending == null || pending.isEmpty())) {
+			return 400;
+		}
+		for (ChessGame c : pending) {
+			if (c.getChessGameId().equals(gameId))
+				chessGameBean.delete(c);
+		}
+		
+		return 200;
 	}
 
 }

@@ -22,11 +22,11 @@ public class GetGameLobbiesServlet  extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+		String sessionId = request.getSession().getId();
 		LobbyService lobbyService = new LobbyService();
 
 		JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
-		int status = lobbyService.getPendingLobbies(objectBuilder);
+		int status = lobbyService.getPendingLobbies(objectBuilder, sessionId);
 		response.setStatus(status);
 		if (status == 200)
 			JsonResponseWriterHelper.writeResponse(response, objectBuilder);
