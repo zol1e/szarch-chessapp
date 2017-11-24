@@ -233,7 +233,6 @@ public class WebSocketHandler extends WebSocketAdapter {
 						chessGame.setBlackTimeLeft(blackTimeLeftNow);
 					}
 				}
-				chessGameBean.update(chessGame);
 			}
 			
 			GameSocketRepository.addPlayer(chessGame.getChessGameId(), userLogin.getUserName(), session, amIBlack);
