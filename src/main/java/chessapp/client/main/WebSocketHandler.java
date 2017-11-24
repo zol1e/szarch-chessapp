@@ -136,9 +136,8 @@ public class WebSocketHandler extends WebSocketAdapter {
 			return;
 		}
 		UserLogin userLogin = loginBean.findBySessionId(httpSessionId);
-		ChessGameBean chessGameBean = new ChessGameBean();
-		ChessGame chessGame = chessGameBean.getOngoingBySomePlayer(userLogin.getUserName());
-		String ongoingChessGameId = chessGame == null ? null : chessGame.getChessGameId();
+		if (userLogin == null)
+			return;
 		// --- Globális üzenetek kezelése
 		if (message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GLOBAL_CONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_GLOBAL_CONNECT);
@@ -166,11 +165,16 @@ public class WebSocketHandler extends WebSocketAdapter {
 					GlobalSocketRepository.removeConnection(entry.getKey(), sess);
 			}
 		}
+		
+		ChessGameBean chessGameBean = new ChessGameBean();
+		ChessGame chessGame = chessGameBean.getOngoingBySomePlayer(userLogin.getUserName());
+		if (chessGame == null)
+			return;
 
 		// --- Privát üzenetek kezelése
 		if (message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_CONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_CONNECT);
-			PrivateSocketRepository.addPlayer(ongoingChessGameId, userLogin.getUserName(), getSession());
+			PrivateSocketRepository.addPlayer(chessGame.getChessGameId(), userLogin.getUserName(), getSession());
 		}
 		if (message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_PRIVATE_DISCONNECT)) {
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_DISCONNECT);
@@ -181,9 +185,9 @@ public class WebSocketHandler extends WebSocketAdapter {
 			System.out.println("WS-Type: " + WS_TYPE_PRIVATE_MESSAGE);
 			String content = message.getString("content");
 
-			privateChatMsgBean.create(new PrivateChatMessage(userLogin.getUserName(), content, ongoingChessGameId));
+			privateChatMsgBean.create(new PrivateChatMessage(userLogin.getUserName(), content, chessGame.getChessGameId()));
 
-			List<Subscriber> subscribers = PrivateSocketRepository.connections.get(ongoingChessGameId);
+			List<Subscriber> subscribers = PrivateSocketRepository.connections.get(chessGame.getChessGameId());
 			if (subscribers == null || subscribers.isEmpty())
 				return;
 			subscribers.forEach(x -> {
@@ -232,7 +236,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 				chessGameBean.update(chessGame);
 			}
 			
-			GameSocketRepository.addPlayer(ongoingChessGameId, userLogin.getUserName(), session, amIBlack);
+			GameSocketRepository.addPlayer(chessGame.getChessGameId(), userLogin.getUserName(), session, amIBlack);
 			if(session.isOpen()) {
 				sendMessage(session, MessageType.GAME, "game status message ", ChessGameBean.getGameStatus(chessGame));
 			}
@@ -297,7 +301,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 			}
 			GameStatus gameStatus = ChessGameBean.getGameStatus(chessGame);
 			
-			List<ColoredSubscriber> subscribers = GameSocketRepository.connections.get(ongoingChessGameId);
+			List<ColoredSubscriber> subscribers = GameSocketRepository.connections.get(chessGame.getChessGameId());
 			if (subscribers == null || subscribers.isEmpty())
 				return;
 
