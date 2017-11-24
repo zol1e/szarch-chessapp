@@ -81,6 +81,6 @@ public class ChessPressoUtilityTest {
 	public void getMoveStringTest() {
 		short captureMove = ChesspressoUtility.convertMoveToChesspressoFormat("d2", "d4", "n", "w", null);
 		String result = ChesspressoUtility.getMoveString(captureMove);
-		assertEquals(Chess.RES_BLACK_WINS, result);
+		assertEquals("d2-d4", result);
 	}
 }
