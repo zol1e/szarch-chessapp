@@ -7,7 +7,6 @@
 <textarea readonly="readonly" id="privateChatBox"></textarea><br>
 
 <input id="toSendPrivateMessage" type="text"> <input type="button" onclick="sendPrivateMessage()" value="Send private message"><br>
-<input id="toSendMoveMessage" type="text"> <input type="button" onclick="sendMoveMessage()" value="Send move">
 
 <div id="table"></div>
 

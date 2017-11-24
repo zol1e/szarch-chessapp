@@ -156,8 +156,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 
 				Session sess = entry.getValue();
 				if (sess.isOpen())
-					sendMessage(sess, MessageType.GLOBAL,
-							"Received global message:  " + userLogin.getUserName() + ": " + content, null);
+					sendMessage(sess, MessageType.GLOBAL, userLogin.getUserName() + ": " + content, null);
 				else
 					GlobalSocketRepository.removeConnection(entry.getKey(), sess);
 			}
@@ -189,8 +188,7 @@ public class WebSocketHandler extends WebSocketAdapter {
 				return;
 			subscribers.forEach(x -> {
 				if (x.socket.isOpen())
-					sendMessage(x.socket, MessageType.PRIVATE,
-							"Received private message:  " + userLogin.getUserName() + ": " + content, null);
+					sendMessage(x.socket, MessageType.PRIVATE, userLogin.getUserName() + ": " + content, null);
 			});
 		}
 
@@ -245,11 +243,20 @@ public class WebSocketHandler extends WebSocketAdapter {
 		if (message.getString(WS_PROPERTY_TYPE).equals(WS_TYPE_GAME_MOVE)) {
 			System.out.println("WS-Type: " + WS_TYPE_GAME_MOVE);
 			
-			String from = message.getString(WS_MOVE_FROM);
-			String to = message.getString(WS_MOVE_TO);
-			String color = message.getString(WS_MOVE_COLOR);
-			String flags = message.getString(WS_MOVE_FLAGS);
-			String promotion = message.getString(WS_MOVE_PROMOTION);
+			String from;
+			String to;
+			String color;
+			String flags;
+			String promotion;
+			try {
+				from = message.getString(WS_MOVE_FROM);
+				to = message.getString(WS_MOVE_TO);
+				color = message.getString(WS_MOVE_COLOR);
+				flags = message.getString(WS_MOVE_FLAGS);
+				promotion = message.getString(WS_MOVE_PROMOTION);
+			} catch (Exception e) {
+				return;
+			}
 			
 			String oldPosition = chessGame.getFen();
 			int onMove = ChesspressoUtility.onMove(oldPosition);

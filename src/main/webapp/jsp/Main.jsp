@@ -46,5 +46,7 @@
 	
 	<!-- Main chess application -->
 	<script src="${pageContext.request.contextPath}/util_js/chessapp.js"></script>
+  <script src="${pageContext.request.contextPath}/util_js/homePart.js"></script>
+  <script src="${pageContext.request.contextPath}/util_js/gameExplorer.js"></script>
 </body>
 </html>

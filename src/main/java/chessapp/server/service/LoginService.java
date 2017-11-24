@@ -33,7 +33,13 @@ public class LoginService {
 	
 	public void logout(String userName, String sessionId) {
 		System.out.println("loggin out as " + userName + " with sessionId: " + sessionId);
-		loginBean.delete(loginBean.findByName(userName));
+		UserLogin user;
+		if (userName == null || userName.isEmpty())
+			user = loginBean.findBySessionId(sessionId);
+		else
+			user = loginBean.findByName(userName);
+		if (user != null)
+			loginBean.delete(user);
 	}	
 	
 	public int isLoggedIn(String userName, String sessionId) {
