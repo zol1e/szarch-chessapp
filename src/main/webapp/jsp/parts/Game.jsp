@@ -14,6 +14,9 @@
 <div id="board" style="width: 400px">table place</div>
 <h3 id="myTime"></h3>
 
+<input type="button" onclick="sendResign()" value="Resign">
+<input type="button" onclick="sendDraw()" value="Offer/Accept draw">
+
 Promote pawns to
 <input name="promotion" type="radio" value="q" checked> Queen
 <input name="promotion" type="radio" value="n"> Knight

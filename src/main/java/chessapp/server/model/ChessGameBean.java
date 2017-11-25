@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 
 import chessapp.server.EntityManagerFactorySingleton;
 import chessapp.server.game.GameStatus;
+import chessapp.server.game.GameStatus.GameResult;
 import chessapp.shared.entities.ChessGame;
 
 public class ChessGameBean {
@@ -46,8 +47,8 @@ public class ChessGameBean {
 		em.getTransaction().begin();
 		em.merge(newGame);
 		em.getTransaction().commit();
-		//delete(em.find(ChessGame.class, newGame.getChessGameId()));
-		//create(newGame);
+		// delete(em.find(ChessGame.class, newGame.getChessGameId()));
+		// create(newGame);
 	}
 
 	public List<ChessGame> getOngoingChessGames() {
@@ -56,7 +57,7 @@ public class ChessGameBean {
 		List<ChessGame> games = query.getResultList();
 		return games;
 	}
-	
+
 	public List<ChessGame> getPendingBySomePlayer(String userName) {
 		TypedQuery<ChessGame> query = em.createQuery(
 				"select u from ChessGame u where u.startDate = null and u.endDate = null and (u.whitePlayerName = :uname or u.blackPlayerName = :uname)",
@@ -64,7 +65,7 @@ public class ChessGameBean {
 		List<ChessGame> games = query.getResultList();
 		return games;
 	}
-	
+
 	public ChessGame getOngoingBySomePlayer(String userName) {
 		TypedQuery<ChessGame> query = em.createQuery(
 				"select u from ChessGame u where u.startDate != null and u.endDate = null and (u.whitePlayerName = :uname or u.blackPlayerName = :uname)",
@@ -92,7 +93,12 @@ public class ChessGameBean {
 	}
 
 	public static GameStatus getGameStatus(ChessGame chessGame) {
-		return new GameStatus(chessGame.getChessGameId(), chessGame.getFen(), chessGame.getMoves(), chessGame.getWhiteTimeLeft(),
-				chessGame.getBlackTimeLeft(), chessGame.getWhitePlayer(), chessGame.getBlackPlayer());
+		GameResult gameResult = GameResult.getGameResultFromString(chessGame.getResult());
+
+		GameStatus gameStatus = new GameStatus(chessGame.getChessGameId(), chessGame.getFen(), chessGame.getMoves(),
+				chessGame.getWhiteTimeLeft(), chessGame.getBlackTimeLeft(), chessGame.getWhitePlayer(),
+				chessGame.getBlackPlayer(), chessGame.isWhiteDrawOffer(), chessGame.isBlackDrawOffer(), gameResult);
+		
+		return gameStatus;
 	}
 }

@@ -20,6 +20,15 @@ public class GameWsMessageUtility {
 		builder.add(WebSocketHandler.WS_GAME_STATUS_WHITE_USER, gameStatus.getWhiteUserName());
 		builder.add(WebSocketHandler.WS_GAME_STATUS_BLACK_USER, gameStatus.getBlackUserName());
 		builder.add(WebSocketHandler.WS_USERNAME, userName);
+		builder.add(WebSocketHandler.WS_MOVE_WHITE_DRAW_OFFER, gameStatus.isWhiteDrawOffer());
+		builder.add(WebSocketHandler.WS_MOVE_BLACK_DRAW_OFFER, gameStatus.isBlackDrawOffer());
+		
+		if(gameStatus.getGameResult() == null) {
+			builder.add(WebSocketHandler.WS_GAME_STATUS_RESULT, WebSocketHandler.WS_EMPTY);
+		} else {
+			builder.add(WebSocketHandler.WS_GAME_STATUS_RESULT, gameStatus.getGameResult().getStringValue());
+		}
+		
 		return builder.build();
 	}
 	

@@ -26,6 +26,9 @@ var lastTickTime = null;
 // Timer object set up at game start and clear after game end
 var jsTimer = null;
 
+// Game result, the value is in sync with GameResult enum in GameStatus class at the server
+var result = null;
+
 // do not pick up pieces if the game is over
 // only pick up pieces for the side to move
 var onDragStart = function(source, piece, position, orientation) {
@@ -66,6 +69,20 @@ var onSnapEnd = function() {
 };
 
 var updateStatus = function() {
+	if(result !== WS_EMPTY) {
+		var myMessage;
+		var opponentMessage;
+
+		document.getElementById("myTime").innerHTML = result;
+		document.getElementById("opponentTime").innerHTML = result;
+		
+		board.dragable = false;
+		
+		clearInterval(jsTimer);
+		
+		return;
+	}
+	
 	if(whiteTimeLeft <= 0) {
 		var myMessage;
 		var opponentMessage;

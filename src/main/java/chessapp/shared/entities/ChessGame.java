@@ -78,6 +78,12 @@ public class ChessGame implements Serializable {
 	@Basic
 	@Temporal(javax.persistence.TemporalType.TIMESTAMP)
 	private Date endDate;
+
+	@Basic
+	private boolean whiteDrawOffer;
+	
+	@Basic
+	private boolean blackDrawOffer;
 	
 	public ChessGame() {
 		super();
@@ -175,5 +181,21 @@ public class ChessGame implements Serializable {
 
 	public void setMoves(String moves) {
 		this.moves = moves;
+	}
+	
+	public boolean isWhiteDrawOffer() {
+		return whiteDrawOffer;
+	}
+
+	public void setWhiteDrawOffer(boolean whiteDrawOffer) {
+		this.whiteDrawOffer = whiteDrawOffer;
+	}
+
+	public boolean isBlackDrawOffer() {
+		return blackDrawOffer;
+	}
+
+	public void setBlackDrawOffer(boolean blackDrawOffer) {
+		this.blackDrawOffer = blackDrawOffer;
 	}
 }

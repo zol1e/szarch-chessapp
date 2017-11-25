@@ -1,8 +1,6 @@
 package chessapp.client.main;
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
 
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
@@ -29,11 +27,10 @@ public class ExploreLatestGamesServlet extends HttpServlet {
 
 		int status = exploreService.makeResponse(gameId, objectBuilder);
 		response.setStatus(status);
-		if (status == 200)
+		if (status == 200) {
 			JsonResponseWriterHelper.writeResponse(response, objectBuilder);
-		else
+		} else {
 			response.sendError(status);
+		}
 	}
-	
-
 }

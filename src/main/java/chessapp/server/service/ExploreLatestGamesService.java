@@ -49,7 +49,7 @@ public class ExploreLatestGamesService {
 				.add("endTime", game.getEndDate() == null ? "" : game.getEndDate().toString())
 				.add("white time left", game.getWhiteTimeLeft() == null ? "" : game.getWhiteTimeLeft().toString())
 				.add("black time left", game.getBlackTimeLeft() == null ? "" : game.getBlackTimeLeft().toString())
-				.add("fen", game.getFen() == null ? "" : game.getFen());
+				.add("moves", game.getMoves() == null ? "" : game.getMoves());
 		return gameBuilder;
 	}
 	

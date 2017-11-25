@@ -1,8 +1,12 @@
+var explorerTable = null;
+var actualMove = null;
+var moves = null;
+
 function checkExplorerTable() {
-	if($('#explorerTable').is(':visible')){
+	if ($('#explorerTable').is(':visible')) {
 		refreshExplorerTable();
 	} else {
-	    setTimeout(checkExplorerTable, 50);
+		setTimeout(checkExplorerTable, 50);
 	}
 }
 
@@ -12,24 +16,35 @@ function refreshExplorerTable() {
 	http.open("GET", url, true);
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
-		if(http.readyState == 4 && http.status == 200) {
-			if (this.responseURL.endsWith("/auth"))
+		if (http.readyState == 4 && http.status == 200) {
+			if (this.responseURL.endsWith("/auth")) {
 				onAuthResponse(this.responseURL);
-			else
+			} else {
 				loadDataToExplorerTable(http.response);
+				initExploreBoard();
+			}
 		}
 	}
 	http.send();
 }
 
+function initExploreBoard() {
+	console.log("init board");
+	var cfg = {
+		position : 'start',
+		pieceTheme : chessFigurePicutrePath
+	};
+	explorerTable = ChessBoard('exploreBoard', cfg);
+}
+
 function loadDataToExplorerTable(data) {
 	data = JSON.parse(data);
 	var table = document.getElementById("explorerTable");
-	while(table.rows.length > 1) {
-		  table.deleteRow(-1);
-		}
+	while (table.rows.length > 1) {
+		table.deleteRow(-1);
+	}
 
-	let fields = ["blackPlayer", "whitePlayer", "winner"];
+	let fields = [ "blackPlayer", "whitePlayer", "winner" ];
 	jQuery.each(data["latestGames"], function() {
 		var row = table.insertRow(-1);
 		let i = 0;
@@ -43,7 +58,7 @@ function loadDataToExplorerTable(data) {
 		btn.className = "btn";
 		btn.value = "Explore";
 		btn.setAttribute("game", this["gameId"]);
-		btn.onclick = function(event){
+		btn.onclick = function(event) {
 			watchExploreGame(this.getAttribute('game'));
 		};
 		cell4.appendChild(btn);
@@ -57,22 +72,50 @@ function watchExploreGame(game) {
 	http.open("POST", url, true);
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
-		if(http.readyState == 4 && http.status == 200) {
-			if (this.responseURL.endsWith("/auth"))
+		if (http.readyState == 4 && http.status == 200) {
+			if (this.responseURL.endsWith("/auth")) {
 				onAuthResponse(this.responseURL);
-			else
+			} else {
 				fillConcreteExploredGame(http.response);
+				initExploreBoard();
+				showExplorerTable(http.response);
+			}
 		}
 	}
 	http.send(params);
+}
+
+function showExplorerTable(data) {
+	data = (JSON.parse(data))["selectedGame"];
+	moves = data.moves.split("|");
+	actualMove = 0;
+	console.log(moves);
+}
+
+function doNextMove() {
+	if (moves != null && moves.length > 0 && actualMove + 1 <= moves.length) {
+		var move = moves[actualMove].split(" ");
+		console.log("nextmove: " + move[0] + "-" + move[1]);
+		explorerTable.move(move[0] + "-" + move[1]);
+		actualMove = actualMove + 1;
+	}
+}
+
+function doPreviousMove() {
+	if (moves != null && moves.length > 0 && actualMove - 1 >= 0) {
+		actualMove = actualMove - 1;
+		var move = moves[actualMove].split(" ");
+		console.log("prevmove: " + move[1] + "-" + move[0]);
+		explorerTable.move(move[1] + "-" + move[0]);
+	}
 }
 
 function fillConcreteExploredGame(data) {
 	data = (JSON.parse(data))["selectedGame"];
 	let fields = Object.keys(data);
 	$("#concreteExploredGame").empty();
-	
-	var table = $('<table></table>').addClass('table right');
+
+	var table = $('<table></table>').addClass('table');
 	var tbody = $('<tbody></tbody>');
 	table.append(tbody);
 	for (let i = 0; i < fields.length; i++) {

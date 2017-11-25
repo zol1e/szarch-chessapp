@@ -18,6 +18,9 @@ var WS_TYPE_PRIVATE_MESSAGE = "message_private";
 
 // Game message constants
 var WS_USERNAME = "username";
+var WS_TRUE = "true";
+var WS_FALSE = "false";
+var WS_EMPTY = "empty";
 
 // Game message type constants
 var WS_TYPE_GAME_STATUS = "game_status";
@@ -84,12 +87,16 @@ function initWebSocket() {
 			var whiteuser = message.whiteuser;
 			var blackuser = message.blackuser;
 			var myUsername = message.username;
+			result = message.result;
 			
-			game = new Chess();
+			//if(game == null) {
+				game = new Chess();
+			//}
 			game.load(fen);
 
 			var isMyTurn = false;
 			var tableOrientation = null;
+			
 			if(whiteuser === myUsername) {
 				tableOrientation = "white";
 				// If white to play, this is my turn
@@ -104,19 +111,34 @@ function initWebSocket() {
 				}
 			}
 			
-			// Initialize the chessboard
-			boardConfig = {
-					  pieceTheme: chessFigurePicutrePath,
-					  position: fen,
-					  draggable: isMyTurn,
-					  onDragStart: onDragStart,
-					  onDrop: onDrop,
-					  onSnapEnd: onSnapEnd,
-					  orientation: tableOrientation
-			};
-			board = ChessBoard("board", boardConfig);
+			console.log(result);
 			
-			startTimer(whitetime, blacktime, 200);
+			if(result !== WS_EMPTY) {
+				isMyTurn = false;
+			}
+			
+			//if(board == null) {
+				// Initialize the chessboard
+				boardConfig = {
+						  pieceTheme: chessFigurePicutrePath,
+						  position: fen,
+						  draggable: isMyTurn,
+						  onDragStart: onDragStart,
+						  onDrop: onDrop,
+						  onSnapEnd: onSnapEnd,
+						  orientation: tableOrientation
+				};
+				board = ChessBoard("board", boardConfig);
+			//} else {
+			//	board.position(fen);
+			//	board.draggable = isMyTurn;
+			//	board.orientation(tableOrientation);
+			//}
+			
+			// If the game is over, no need to start the timer
+			if(result === WS_EMPTY) {
+				startTimer(whitetime, blacktime, 200);
+			}
 			updateStatus();
 		}
 	};
@@ -159,6 +181,59 @@ function message_websocket(type, content) {
 	}
 }
 
+function sendResign() {
+	if (websocket != null && websocket.readyState == 1) {
+		var message = { 
+				type: WS_TYPE_GAME_MOVE,
+				from: WS_EMPTY, 
+				to: WS_EMPTY,
+				color: WS_EMPTY,
+				flags: WS_EMPTY,
+				promotion: WS_EMPTY,
+				whitedraw: WS_FALSE,
+				blackdraw: WS_FALSE,
+				resign: WS_TRUE
+		};
+		websocket.send(JSON.stringify(message));
+	} else {
+		// TODO: proper handling of WebSocket is not connected
+	}
+}
+
+function sendDraw() {
+	if (websocket != null && websocket.readyState == 1) {
+		var message;
+		if(board.orientation() === 'white') {
+			message = { 
+				type: WS_TYPE_GAME_MOVE,
+				from: WS_EMPTY, 
+				to: WS_EMPTY,
+				color: WS_EMPTY,
+				flags: WS_EMPTY,
+				promotion: WS_EMPTY,
+				whitedraw: WS_TRUE,
+				blackdraw: WS_FALSE,
+				resign: WS_FALSE
+			};
+		} else {
+			message = { 
+				type: WS_TYPE_GAME_MOVE,
+				from: WS_EMPTY, 
+				to: WS_EMPTY,
+				color: WS_EMPTY,
+				flags: WS_EMPTY,
+				promotion: WS_EMPTY,
+				whitedraw: WS_FALSE,
+				blackdraw: WS_TRUE,
+				resign: WS_FALSE
+			};
+		}
+		websocket.send(JSON.stringify(message));
+	} else {
+		// TODO: proper handling of WebSocket is not connected
+	}
+}
+
 function sendMove(move, toPromote) {
 	if (websocket != null && websocket.readyState == 1) {
 		var message = { 
@@ -167,7 +242,10 @@ function sendMove(move, toPromote) {
 				to: move.to,
 				color: move.color,
 				flags: move.flags,
-				promotion: toPromote
+				promotion: toPromote,
+				whitedraw: WS_FALSE,
+				blackdraw: WS_FALSE,
+				resign: WS_FALSE
 		};
 		websocket.send(JSON.stringify(message));
 	} else {

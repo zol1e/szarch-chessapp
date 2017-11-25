@@ -1,5 +1,6 @@
 package chessapp.server.game;
 
+import chessapp.server.game.GameStatus.GameResult;
 import chesspresso.Chess;
 import chesspresso.move.IllegalMoveException;
 import chesspresso.move.Move;
@@ -174,11 +175,11 @@ public class ChesspressoUtility {
 	
 	private static String getGameResult(int gameState) {
 		if(gameState == Chess.RES_BLACK_WINS) {
-			return "black wins";
+			return GameResult.RESULT_BLACK_WON.getStringValue();
 		} else if(gameState == Chess.RES_WHITE_WINS) {
-			return "white wins";
+			return GameResult.RESULT_WHITE_WON.getStringValue();
 		} else if(gameState == Chess.RES_DRAW) {
-			return "draw";
+			return GameResult.RESULT_DRAW.getStringValue();
 		} else {
 			return null;
 		}

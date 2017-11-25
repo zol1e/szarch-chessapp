@@ -36,11 +36,11 @@ public class LobbyService {
 		Long timeLimit = new Long(120000);
 		ChessGame newChessGame = getNewChessGame(timeLimit);
 		
-		if (getZeroOrOne() == 0)
+		if (getZeroOrOne() == 0) {
 			newChessGame.setWhitePlayer(userName);
-		else
+		} else {
 			newChessGame.setBlackPlayer(userName);
-		
+		}
 
 		chessGameBean.create(newChessGame);
 		return 200;
@@ -52,6 +52,9 @@ public class LobbyService {
 		newChessGame.setBlackTimeLeft(timeLimit);
 		newChessGame.setFen(ChesspressoUtility.getStartingPositionFEN());
 		newChessGame.setMoves("");
+		newChessGame.setBlackDrawOffer(false);
+		newChessGame.setWhiteDrawOffer(false);
+		
 		return newChessGame;
 	}
 
