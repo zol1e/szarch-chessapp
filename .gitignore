@@ -3,5 +3,5 @@
 target/*
 *.class
 *.obj
-/src/main/webapp/WEB-INF/etc/*
+/src/main/webapp/WEB-INF/etc/keystore
 
