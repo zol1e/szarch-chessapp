@@ -187,7 +187,10 @@ function loadContent(url, contentId, callback) {
 	if(callback == null) {
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-				document.getElementById(contentId).innerHTML = this.responseText;
+				if (this.responseURL.endsWith("/auth"))
+					window.location.replace(this.responseURL);
+				else
+					document.getElementById(contentId).innerHTML = this.responseText;
 			}
 		};
 	} else {

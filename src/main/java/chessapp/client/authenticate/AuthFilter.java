@@ -39,6 +39,9 @@ public class AuthFilter implements Filter {
 
 		if (session == null || !isValid(session.getId(), (String)session.getAttribute("currentSessionUser"))) {
 			this.context.log("Unauthorized access request");
+			
+            /*res.setHeader("Location", req.getContextPath() + "/auth");
+            res.sendError(403);*/
 			res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + "/auth"));
 		} else {
 			// pass the request along the filter chain
