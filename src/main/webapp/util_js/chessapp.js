@@ -188,7 +188,8 @@ function loadContent(url, contentId, callback) {
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				if (this.responseURL.endsWith("/auth"))
-					window.location.replace(this.responseURL);
+					//window.location.replace(this.responseURL);
+					onAuthResponse(this.responseURL);
 				else
 					document.getElementById(contentId).innerHTML = this.responseText;
 			}
@@ -201,6 +202,17 @@ function loadContent(url, contentId, callback) {
 	xhttp.open("GET", url, true);
 	xhttp.send();
 }
+
+function onAuthResponse(url) {
+    var evt = $.Event('mustLogin');
+    evt.url = url;
+
+    $(window).trigger(evt);
+}
+
+$(window).on('mustLogin', function (e) {
+	window.location.replace(e.url);
+});
 
 function loadHomeArea() {
 	loadContent("/main/part/home", "content");

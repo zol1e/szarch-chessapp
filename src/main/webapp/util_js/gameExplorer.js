@@ -13,7 +13,10 @@ function refreshExplorerTable() {
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
 		if(http.readyState == 4 && http.status == 200) {
-			loadDataToExplorerTable(http.response);
+			if (this.responseURL.endsWith("/auth"))
+				onAuthResponse(this.responseURL);
+			else
+				loadDataToExplorerTable(http.response);
 		}
 	}
 	http.send();
@@ -55,7 +58,10 @@ function watchExploreGame(game) {
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
 		if(http.readyState == 4 && http.status == 200) {
-			fillConcreteExploredGame(http.response);
+			if (this.responseURL.endsWith("/auth"))
+				onAuthResponse(this.responseURL);
+			else
+				fillConcreteExploredGame(http.response);
 		}
 	}
 	http.send(params);

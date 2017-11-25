@@ -12,7 +12,8 @@ function createNewGame() {
 	http.open("GET", url, true);
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
-		if(http.readyState == 4 && http.status == 200) {
+		if(http.readyState == 4 && http.status == 200) {if (this.responseURL.endsWith("/auth"))
+			onAuthResponse(this.responseURL);
 		}
 	}
 	http.send();
@@ -26,6 +27,8 @@ function joinGame(game, attname) {
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
 		if(http.readyState == 4 && http.status == 200) {
+			if (this.responseURL.endsWith("/auth"))
+				onAuthResponse(this.responseURL);
 		}
 	}
 	http.send(params);
@@ -38,7 +41,10 @@ function refreshLobbyTable() {
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.onreadystatechange = function() {
 		if(http.readyState == 4 && http.status == 200) {
-			loadDataToLobbyTable(http.response);
+			if (this.responseURL.endsWith("/auth"))
+				onAuthResponse(this.responseURL);
+			else
+				loadDataToLobbyTable(http.response);
 		}
 	}
 	http.send();
