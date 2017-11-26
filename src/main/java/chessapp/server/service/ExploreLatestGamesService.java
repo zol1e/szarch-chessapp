@@ -43,7 +43,6 @@ public class ExploreLatestGamesService {
 		JsonObjectBuilder gameBuilder = Json.createObjectBuilder()
 				.add("blackPlayer", game.getBlackPlayer() == null ? "" : game.getBlackPlayer())
 				.add("whitePlayer", game.getWhitePlayer() == null ? "" : game.getWhitePlayer())
-				.add("gameId", game.getChessGameId())
 				.add("winner", game.getResult() == null ? "" : game.getResult())
 				.add("startTime", game.getStartDate() == null ? "" : game.getStartDate().toString())
 				.add("endTime", game.getEndDate() == null ? "" : game.getEndDate().toString())
