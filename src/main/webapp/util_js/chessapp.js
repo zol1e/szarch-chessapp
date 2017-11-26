@@ -321,14 +321,6 @@ function loadGameExplorerArea() {
 	disconnect_private();
 }
 
-function loadProfileArea() {
-	loadContent("/main/part/profile", "content");
-	connect_websocket();
-	disconnect_global();
-	disconnect_game();
-	disconnect_private();
-}
-
 function connect_global() {
 	isGlobalState = true;
 	message_websocket(WS_TYPE_GLOBAL_CONNECT, null);

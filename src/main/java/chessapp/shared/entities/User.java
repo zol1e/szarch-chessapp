@@ -33,12 +33,6 @@ public class User implements Serializable {
 	private String password;
 
 	@Basic
-	private String firstName;
-
-	@Basic
-	private String lastName;
-
-	@Basic
 	@Temporal(javax.persistence.TemporalType.DATE)
 	private Date joinDate;
 
@@ -69,22 +63,6 @@ public class User implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	public Date getJoinDate() {

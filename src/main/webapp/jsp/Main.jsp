@@ -21,7 +21,6 @@
 		      <li><a onclick="loadHomeArea()">Home</a></li>
 		      <li><a onclick="loadGameExplorerArea()">Game explorer</a></li>
 		      <li><a onclick="loadGameArea()">Play!</a></li>
-		      <li><a onclick="loadProfileArea()">Profile</a></li>
 		    </ul>
 		    <form action="/LogoutServlet" method="post" class="navbar-form navbar-left">
 				<label>Logged in as <c:out value="${userName}"/></label>

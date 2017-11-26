@@ -31,15 +31,7 @@
     <servlet-name>HomeServlet</servlet-name>
     <url-pattern>/main/part/home</url-pattern>
   </servlet-mapping>
-  
-  <servlet>
-    <servlet-name>ProfileServlet</servlet-name>
-    <servlet-class>chessapp.client.part.ProfileServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ProfileServlet</servlet-name>
-    <url-pattern>/main/part/profile</url-pattern>
-  </servlet-mapping>
+
   <!-- End of Part servlets -->
   <!-- Game initialization and lobbies Servlets  -->
   <servlet>

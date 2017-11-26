@@ -1,5 +1,9 @@
 package chessapp.server.service;
 
+import java.nio.charset.StandardCharsets;
+
+import com.google.common.hash.Hashing;
+
 import chessapp.server.model.LoginBean;
 import chessapp.server.model.UserBean;
 import chessapp.shared.entities.User;
@@ -11,10 +15,13 @@ public class LoginService {
 	private UserBean userBean = new UserBean();
 	
 	public int login(String userName, String password, String sessionId) {
-		if (userName == null || password == null || sessionId == null)
+		if (userName == null || password == null || sessionId == null ||
+				userName.isEmpty() || password.isEmpty() || sessionId.isEmpty())
 			return -1;
 		System.out.println("loggin in as " + userName + " with sessionId: " + sessionId);
-		
+		String pwHashed = Hashing.sha256()
+				  .hashString(password, StandardCharsets.UTF_8)
+				  .toString();
 		UserLogin newer = new UserLogin(userName, sessionId, null);
 		
 		UserLogin old = loginBean.findByName(userName);		
@@ -23,7 +30,7 @@ public class LoginService {
 			return 0;
 		}
 		
-		User usr = userBean.findByNameNPassword(userName, password);
+		User usr = userBean.findByNameNPassword(userName, pwHashed);
 		if (usr != null){
 			loginBean.create(newer);
 			return 0;
@@ -54,13 +61,15 @@ public class LoginService {
 	
 	public int register(String userName, String password) {
 		System.out.println("try to register as " + userName);
-		if (null != userBean.findByName(userName))
+		if (null != userBean.findByName(userName) || 
+				userName == null || userName.isEmpty() || password == null || password.isEmpty())
 			return -1;
+		String pwHashed = Hashing.sha256()
+				  .hashString(password, StandardCharsets.UTF_8)
+				  .toString();
 		User user = new User();
-		user.setFirstName("");
-		user.setLastName("");
 		user.setNickName(userName);
-		user.setPassword(password);
+		user.setPassword(pwHashed);
 		
 		userBean.create(user);
 		return 0;
