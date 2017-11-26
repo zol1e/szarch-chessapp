@@ -48,7 +48,7 @@ var isGlobalState;
 
 function initWebSocket() {
 	// TODO: address should not be hardcoded
-	websocket = new WebSocket("wss://localhost:8443/main/websocket");
+	websocket = new WebSocket(wsAddress);
 	websocket.onopen = function(evt) {
 		// TODO: proper handling of opening WebSocket event
 		console.log("WebSocket connected");

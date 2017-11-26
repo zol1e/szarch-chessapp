@@ -9,6 +9,10 @@
 	<link rel="stylesheet"
 		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/chessboardjs/css/chessboard-0.3.0.min.css">
+	
+	<script>
+		var wsAddress = ${wsAddress};
+	</script>
 </head>
 <body>
 	<nav id="menu">
