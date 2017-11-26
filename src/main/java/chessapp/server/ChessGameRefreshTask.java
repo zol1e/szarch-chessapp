@@ -19,9 +19,6 @@ public class ChessGameRefreshTask implements Runnable {
 		List<ChessGame> ongoingGames = chessGameBean.getOngoingChessGames();
 		Date dateNow = new Date();
 
-		System.out.println(ongoingGames.size() + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-				+ dateNow.toString() + ": refreshing job call");
-
 		for (ChessGame chessGame : ongoingGames) {
 			int onMove = ChesspressoUtility.onMove(chessGame.getFen());
 
