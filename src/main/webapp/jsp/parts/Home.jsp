@@ -3,7 +3,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <h3>Global chat</h3>
-<textarea readonly="readonly" id="chatbox"></textarea><br>
+<textarea readonly="readonly" id="chatbox" style="width:100%;"></textarea><br>
 <input id="toSendGlobalMessage" type="text"> <input type="button" onclick="sendGlobalMessage()" value="Send global message">
 <div id="gameLobby">
 <table class="table" id="lobbyTable">

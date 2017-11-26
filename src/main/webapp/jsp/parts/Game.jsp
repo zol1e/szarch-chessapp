@@ -4,7 +4,7 @@
 
 <h1>Game block of page</h1>
 
-<textarea readonly="readonly" id="privateChatBox"></textarea><br>
+<textarea readonly="readonly" id="privateChatBox" style="width:100%;"></textarea><br>
 
 <input id="toSendPrivateMessage" type="text"> <input type="button" onclick="sendPrivateMessage()" value="Send private message"><br>
 

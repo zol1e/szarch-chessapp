@@ -115,6 +115,12 @@ function doPreviousMove() {
 
 function fillConcreteExploredGame(data) {
 	data = (JSON.parse(data))["selectedGame"];
+	if (data.hasOwnProperty('white time left')) {
+		data["white time left"] = formatTime(convertMillisToHMS(data["white time left"]));
+	}
+	if (data.hasOwnProperty('black time left')) {
+		data["black time left"] = formatTime(convertMillisToHMS(data["black time left"]));
+	}
 	let fields = Object.keys(data);
 	$("#concreteExploredGame").empty();
 
