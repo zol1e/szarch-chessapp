@@ -11,7 +11,7 @@
 <div id="table"></div>
 
 <h3 id="opponentTime"></h3>
-<div id="board" style="width: 400px">table place</div>
+<div id="board" style="width: 400px; height:400px">Create table or join to a game!</div>
 <h3 id="myTime"></h3>
 
 <input type="button" onclick="sendResign()" value="Resign">

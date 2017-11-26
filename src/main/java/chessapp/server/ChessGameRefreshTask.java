@@ -3,12 +3,11 @@ package chessapp.server;
 import java.util.Date;
 import java.util.List;
 
-import chessapp.client.main.WebSocketHandler;
-import chessapp.client.main.WebSocketHandler.MessageType;
 import chessapp.server.game.ChesspressoUtility;
-import chessapp.server.game.ColoredSubscriber;
 import chessapp.server.game.GameStatus;
+import chessapp.server.game.GameStatus.GameResult;
 import chessapp.server.model.ChessGameBean;
+import chessapp.server.service.ChessGameMessageService;
 import chessapp.shared.entities.ChessGame;
 import chesspresso.Chess;
 
@@ -38,7 +37,7 @@ public class ChessGameRefreshTask implements Runnable {
 				if (whiteTimeLeftNow <= 0) {
 					chessGame.setWhiteTimeLeft(new Long(0));
 					chessGame.setEndDate(dateNow);
-					chessGame.setResult("white lost on time");
+					chessGame.setResult(GameResult.RESULT_BLACK_WON.getStringValue());
 					gameOver = true;
 				}
 			}
@@ -47,7 +46,7 @@ public class ChessGameRefreshTask implements Runnable {
 				if (blackTimeLeftNow <= 0) {
 					chessGame.setBlackTimeLeft(new Long(0));
 					chessGame.setEndDate(dateNow);
-					chessGame.setResult("black lost on time");
+					chessGame.setResult(GameResult.RESULT_WHITE_WON.getStringValue());
 					gameOver = true;
 				}
 			}
@@ -56,15 +55,7 @@ public class ChessGameRefreshTask implements Runnable {
 			if (gameOver) {
 				chessGameBean.update(chessGame);
 				GameStatus gameStatus = ChessGameBean.getGameStatus(chessGame);
-
-				List<ColoredSubscriber> subscribers = GameSocketRepository.connections.get(chessGame.getChessGameId());
-				if (subscribers == null || subscribers.isEmpty())
-					return;
-
-				subscribers.forEach(x -> {
-					if (x.socket.isOpen())
-						WebSocketHandler.sendMessage(x.socket, MessageType.GAME, "game status message ", gameStatus);
-				});
+				ChessGameMessageService.broadcastGameStatus(chessGame, gameStatus);
 			}
 		}
 	}

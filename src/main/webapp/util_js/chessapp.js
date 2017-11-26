@@ -89,9 +89,7 @@ function initWebSocket() {
 			var myUsername = message.username;
 			result = message.result;
 			
-			//if(game == null) {
-				game = new Chess();
-			//}
+			game = new Chess();
 			game.load(fen);
 
 			var isMyTurn = false;
@@ -182,7 +180,7 @@ function message_websocket(type, content) {
 }
 
 function sendResign() {
-	if (websocket != null && websocket.readyState == 1) {
+	if (board != null && websocket != null && websocket.readyState == 1) {
 		var message = { 
 				type: WS_TYPE_GAME_MOVE,
 				from: WS_EMPTY, 
@@ -201,7 +199,7 @@ function sendResign() {
 }
 
 function sendDraw() {
-	if (websocket != null && websocket.readyState == 1) {
+	if (board != null && websocket != null && websocket.readyState == 1) {
 		var message;
 		if(board.orientation() === 'white') {
 			message = { 

@@ -1,44 +1,9 @@
 package chessapp.server.game;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
-import chessapp.server.game.GameStatus.GameResult;
-import chessapp.server.model.ChessGameBean;
-import chessapp.shared.entities.ChessGame;
-import chesspresso.Chess;
-
 public class ChessGameUtility {
-
-	public static ChessGame updateChessGameTime(ChessGameBean chessGameBean, ChessGame chessGame, int onMove, Date dateNow) {
-		Long lastMoveTime = chessGame.getLastMoveTime().getTime();
-		Long nowMillis = dateNow.getTime();
-		Long difference = nowMillis - lastMoveTime;
-		if (Chess.WHITE == onMove) {
-			Long whiteTimeLeftNow = chessGame.getWhiteTimeLeft() - difference;
-			if (whiteTimeLeftNow <= 0) {
-				chessGame.setWhiteTimeLeft(new Long(0));
-				chessGame.setEndDate(dateNow);
-				chessGame.setResult(GameResult.RESULT_BLACK_WON.getStringValue());
-			} else {
-				chessGame.setWhiteTimeLeft(whiteTimeLeftNow);
-			}
-		}
-		if (Chess.BLACK == onMove) {
-			Long blackTimeLeftNow = chessGame.getBlackTimeLeft() - difference;
-			if (blackTimeLeftNow <= 0) {
-				chessGame.setBlackTimeLeft(new Long(0));
-				chessGame.setEndDate(dateNow);
-				chessGame.setResult(GameResult.RESULT_WHITE_WON.getStringValue());
-			} else {
-				chessGame.setBlackTimeLeft(blackTimeLeftNow);
-			}
-		}
-		chessGame.setLastMoveTime(dateNow);
-		
-		return chessGame;
-	}
 	
 	/**
 	 * Return the list of moves represented as one string in the databse. Moves

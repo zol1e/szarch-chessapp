@@ -8,14 +8,13 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
 
-import chessapp.client.main.WebSocketHandler;
-import chessapp.client.main.WebSocketHandler.MessageType;
 import chessapp.server.GameSocketRepository;
 import chessapp.server.game.ChesspressoUtility;
 import chessapp.server.game.ColoredSubscriber;
 import chessapp.server.game.GameStatus;
 import chessapp.server.model.ChessGameBean;
 import chessapp.server.model.LoginBean;
+import chessapp.server.service.WebSocketMessageService.MessageType;
 import chessapp.shared.entities.ChessGame;
 
 public class LobbyService {
@@ -115,7 +114,7 @@ public class LobbyService {
 		// Send message to the players, that the game has started
 		for (ColoredSubscriber subscriber : subscribers) {
 			if(subscriber.socket.isOpen())
-			    WebSocketHandler.sendMessage(subscriber.socket, MessageType.GAME, "Game has started", gameStatus);
+				WebSocketMessageService.sendMessage(subscriber.socket, MessageType.GAME, "Game has started", gameStatus);
 		}
 		return 200;
 	}
