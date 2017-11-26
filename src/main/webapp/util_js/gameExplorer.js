@@ -1,4 +1,5 @@
 var explorerTable = null;
+var exploreGame = null;
 var actualMove = null;
 var moves = null;
 
@@ -35,6 +36,10 @@ function initExploreBoard() {
 		pieceTheme : chessFigurePicutrePath
 	};
 	explorerTable = ChessBoard('exploreBoard', cfg);
+	
+	exploreGame = new Chess();
+	
+	explorerTable.position(exploreGame.fen());
 }
 
 function loadDataToExplorerTable(data) {
@@ -96,8 +101,10 @@ function doNextMove() {
 	if (moves != null && moves.length > 0 && actualMove + 1 <= moves.length) {
 		var move = moves[actualMove].split(" ");
 		console.log("nextmove: " + move[0] + "-" + move[1]);
-		explorerTable.move(move[0] + "-" + move[1]);
+		//explorerTable.move(move[0] + "-" + move[1]);
 		actualMove = actualMove + 1;
+		exploreGame.move({ color: move[2], from: move[0], to: move[1], flags: move[3], promotion: move[4] });
+		explorerTable.position(exploreGame.fen());
 	}
 }
 
@@ -106,7 +113,9 @@ function doPreviousMove() {
 		actualMove = actualMove - 1;
 		var move = moves[actualMove].split(" ");
 		console.log("prevmove: " + move[1] + "-" + move[0]);
-		explorerTable.move(move[1] + "-" + move[0]);
+		//explorerTable.move(move[1] + "-" + move[0]);
+		exploreGame.undo();
+		explorerTable.position(exploreGame.fen());
 	}
 }
 
